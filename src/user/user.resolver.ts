@@ -1,12 +1,15 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { Patient, Personnel } from './entities/user.entity';
+import { CreateUserResponse, Patient, Personnel } from './entities/user.entity';
 import { CreatePatientInput, CreatePersonnelInput } from './dto/create-user.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 
-@Resolver(() => Patient)
-export class PatientResolver {
+@Resolver()
+export class UserResolver {
   constructor(private readonly userService: UserService) { }
 
+  @UseGuards(GqlAuthGuard)
   @Query((returns) => Patient)
   async getPatient(@Args('rut') rut: string) {
     const patient = await this.userService.getPatientByRut(rut);
@@ -17,21 +20,16 @@ export class PatientResolver {
     return patient;
   }
 
-  @Mutation(() => Patient)
+  @Mutation(() => CreateUserResponse)
   async createPatient(@Args('patientInput') patientInput: CreatePatientInput) {
     try {
-      const newPatient = await this.userService.createPatient(patientInput);
-      return newPatient;
+      return await this.userService.createPatient(patientInput);
     } catch (error) {
       throw new Error(error.message);
     }
   }
-}
 
-@Resolver(() => Personnel)
-export class PersonnelResolver {
-  constructor(private readonly userService: UserService) { }
-
+  @UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnel(@Args('rut') rut: string) {
     const personnel = await this.userService.getPersonnelByRut(rut);
@@ -45,8 +43,7 @@ export class PersonnelResolver {
   @Mutation(() => Personnel)
   async createPersonnel(@Args('personnelInput') personnelInput: CreatePersonnelInput) {
     try {
-      const newPersonnel = await this.userService.createPersonnel(personnelInput);
-      return newPersonnel;
+      return await this.userService.createPersonnel(personnelInput);
     } catch (error) {
       throw new Error(error.message);
     }

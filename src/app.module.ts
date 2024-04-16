@@ -4,7 +4,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+import { JwtStrategy } from './auth/middleware/jwt.strategy';
 
 dotenv.config();
 
@@ -26,7 +28,9 @@ dotenv.config();
       
     }),
     UserModule,
+    AuthModule,
   ],
+  providers: [JwtStrategy],
 })
 
 export class AppModule {

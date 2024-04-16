@@ -22,6 +22,7 @@ type Patient {
 
 type Personnel {
   id: Int!
+  access_token: String
   rut: String!
   password: String!
   first_name: String!
@@ -33,14 +34,21 @@ type Personnel {
   speciality: String!
 }
 
+type CreateUserResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Query {
   getPatient(rut: String!): Patient!
   getPersonnel(rut: String!): Personnel!
 }
 
 type Mutation {
-  createPatient(patientInput: CreatePatientInput!): Patient!
+  createPatient(patientInput: CreatePatientInput!): CreateUserResponse!
   createPersonnel(personnelInput: CreatePersonnelInput!): Personnel!
+  loginPatient(loginInput: LoginInput!): Patient!
+  loginPersonnel(loginInput: LoginInput!): Personnel!
 }
 
 input CreatePatientInput {
@@ -69,4 +77,9 @@ input CreatePersonnelInput {
   email: String!
   role: String!
   speciality: String!
+}
+
+input LoginInput {
+  rut: String!
+  password: String!
 }

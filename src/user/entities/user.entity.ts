@@ -72,6 +72,10 @@ export class Personnel {
   @Field((type) => Int)
   id: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  access_token: string | null;
+
   @Column({ length: 12 })
   @Field()
   rut: string;
@@ -107,4 +111,13 @@ export class Personnel {
   @Column({ length: 100 })
   @Field()
   speciality: string;
+}
+
+@ObjectType()
+export class CreateUserResponse {
+  @Field()
+  success: boolean;
+
+  @Field()
+  message: string;
 }
