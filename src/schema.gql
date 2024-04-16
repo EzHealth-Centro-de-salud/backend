@@ -1,0 +1,72 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Patient {
+  id: Int!
+  access_token: String
+  rut: String!
+  password: String!
+  birthdate: String!
+  first_name: String!
+  middle_name: String
+  surname: String!
+  second_surname: String
+  sex: String!
+  address: String!
+  region: String!
+  commune: String!
+  email: String!
+  phone: String!
+}
+
+type Personnel {
+  id: Int!
+  rut: String!
+  password: String!
+  first_name: String!
+  middle_name: String
+  surname: String!
+  second_surname: String
+  email: String!
+  role: String!
+  speciality: String!
+}
+
+type Query {
+  getPatient(rut: String!): Patient!
+  getPersonnel(rut: String!): Personnel!
+}
+
+type Mutation {
+  createPatient(patientInput: CreatePatientInput!): Patient!
+  createPersonnel(personnelInput: CreatePersonnelInput!): Personnel!
+}
+
+input CreatePatientInput {
+  rut: String!
+  password: String!
+  birthdate: String!
+  first_name: String!
+  middle_name: String
+  surname: String!
+  second_surname: String
+  sex: String!
+  address: String!
+  region: String!
+  commune: String!
+  email: String!
+  phone: String!
+}
+
+input CreatePersonnelInput {
+  rut: String!
+  password: String!
+  first_name: String!
+  middle_name: String
+  surname: String!
+  second_surname: String
+  email: String!
+  role: String!
+  speciality: String!
+}
