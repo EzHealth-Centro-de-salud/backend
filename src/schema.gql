@@ -23,6 +23,7 @@ type Patient {
 type Personnel {
   id: Int!
   access_token: String
+  recovery_code: String
   rut: String!
   password: String!
   first_name: String!

@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Unique,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @Entity()
@@ -11,6 +17,10 @@ export class Patient {
   @Column({ nullable: true })
   @Field({ nullable: true })
   access_token: string | null;
+
+  @Column({ length: 6, nullable: true })
+  @Field({ nullable: true })
+  recovery_code: string | null;
 
   @Column({ length: 12 })
   @Field()
@@ -75,6 +85,10 @@ export class Personnel {
   @Column({ nullable: true })
   @Field({ nullable: true })
   access_token: string | null;
+
+  @Column({ length: 6, nullable: true })
+  @Field({ nullable: true })
+  recovery_code: string | null;
 
   @Column({ length: 12 })
   @Field()
