@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePatientInput, CreatePersonnelInput } from './dto/create-user.input';
-import { CreateUserResponse, Patient, Personnel } from './entities/user.entity';
+import {
+  CreatePatientInput,
+  CreatePersonnelInput,
+} from './dto/create-user.input';
+import { UserResponse, Patient, Personnel } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -12,7 +15,7 @@ export class UserService {
     private patientRepository: Repository<Patient>,
     @InjectRepository(Personnel)
     private personnelRepository: Repository<Personnel>,
-  ) { }
+  ) {}
 
   //Other Methods
   async isValidRut(rut: string): Promise<string> {
@@ -25,12 +28,16 @@ export class UserService {
 
     for (let i = body.length - 1; i >= 0; i--) {
       counter = counter + parseInt(body.charAt(i)) * multiple;
-      multiple = (multiple < 7) ? multiple + 1 : 2;
+      multiple = multiple < 7 ? multiple + 1 : 2;
     }
 
     const expectedDv = 11 - (counter % 11);
-    if (expectedDv === 10 && dv !== 'K' || expectedDv === 11 && dv !== '0' || dv !== expectedDv.toString()) {
-      throw new Error('Rut inválido.')
+    if (
+      (expectedDv === 10 && dv !== 'K') ||
+      (expectedDv === 11 && dv !== '0') ||
+      dv !== expectedDv.toString()
+    ) {
+      throw new Error('Rut inválido.');
     }
     return value;
   }
@@ -41,7 +48,7 @@ export class UserService {
     return this.patientRepository.findOne({ where: { rut: validRut } });
   }
 
-  async createPatient(input: CreatePatientInput): Promise<CreateUserResponse> {
+  async createPatient(input: CreatePatientInput): Promise<UserResponse> {
     const patient = await this.getPatientByRut(input.rut);
 
     if (patient) {
@@ -58,7 +65,7 @@ export class UserService {
     this.patientRepository.save(newPatient);
 
     const success = true;
-    const message = "Paciente creado exitosamente.";
+    const message = 'Paciente creado exitosamente.';
     const response = { success, message };
 
     return response;
@@ -70,7 +77,7 @@ export class UserService {
     return this.personnelRepository.findOne({ where: { rut: validRut } });
   }
 
-  async createPersonnel(input: CreatePersonnelInput): Promise<CreateUserResponse> {
+  async createPersonnel(input: CreatePersonnelInput): Promise<UserResponse> {
     const personnel = await this.getPersonnelByRut(input.rut);
 
     if (personnel) {
@@ -87,10 +94,9 @@ export class UserService {
     this.personnelRepository.save(newPersonnel);
 
     const success = true;
-    const message = "Personal creado exitosamente.";
+    const message = 'Personal creado exitosamente.';
     const response = { success, message };
 
     return response;
   }
-
 }

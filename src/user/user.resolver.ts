@@ -1,13 +1,16 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { CreateUserResponse, Patient, Personnel } from './entities/user.entity';
-import { CreatePatientInput, CreatePersonnelInput } from './dto/create-user.input';
+import { UserResponse, Patient, Personnel } from './entities/user.entity';
+import {
+  CreatePatientInput,
+  CreatePersonnelInput,
+} from './dto/create-user.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 
 @Resolver()
 export class UserResolver {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @UseGuards(GqlAuthGuard)
   @Query((returns) => Patient)
@@ -20,7 +23,7 @@ export class UserResolver {
     return patient;
   }
 
-  @Mutation(() => CreateUserResponse)
+  @Mutation(() => UserResponse)
   async createPatient(@Args('patientInput') patientInput: CreatePatientInput) {
     try {
       return await this.userService.createPatient(patientInput);
@@ -40,8 +43,10 @@ export class UserResolver {
     return personnel;
   }
 
-  @Mutation(() => Personnel)
-  async createPersonnel(@Args('personnelInput') personnelInput: CreatePersonnelInput) {
+  @Mutation(() => UserResponse)
+  async createPersonnel(
+    @Args('personnelInput') personnelInput: CreatePersonnelInput,
+  ) {
     try {
       return await this.userService.createPersonnel(personnelInput);
     } catch (error) {

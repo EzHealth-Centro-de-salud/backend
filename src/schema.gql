@@ -5,6 +5,7 @@
 type Patient {
   id: Int!
   access_token: String
+  recovery_code: Float
   rut: String!
   password: String!
   birthdate: String!
@@ -23,7 +24,7 @@ type Patient {
 type Personnel {
   id: Int!
   access_token: String
-  recovery_code: String
+  recovery_code: Float
   rut: String!
   password: String!
   first_name: String!
@@ -35,7 +36,7 @@ type Personnel {
   speciality: String!
 }
 
-type CreateUserResponse {
+type UserResponse {
   success: Boolean!
   message: String!
 }
@@ -46,10 +47,15 @@ type Query {
 }
 
 type Mutation {
-  createPatient(patientInput: CreatePatientInput!): CreateUserResponse!
-  createPersonnel(personnelInput: CreatePersonnelInput!): Personnel!
+  createPatient(patientInput: CreatePatientInput!): UserResponse!
+  createPersonnel(personnelInput: CreatePersonnelInput!): UserResponse!
   loginPatient(loginInput: LoginInput!): Patient!
   loginPersonnel(loginInput: LoginInput!): Personnel!
+  recoveryPatient(recoveryInput: RecoveryUserInput!): Boolean!
+  recoveryPersonnel(recoveryInput: RecoveryUserInput!): Boolean!
+  validateRecovery(recoveryInput: ValidateRecoveryUserInput!): UserResponse!
+  changePasswordPatient(recoveryInput: ChangePasswordInput!): UserResponse!
+  changePasswordPersonnel(recoveryInput: ChangePasswordInput!): UserResponse!
 }
 
 input CreatePatientInput {
@@ -83,4 +89,17 @@ input CreatePersonnelInput {
 input LoginInput {
   rut: String!
   password: String!
+}
+
+input RecoveryUserInput {
+  rut: String!
+}
+
+input ValidateRecoveryUserInput {
+  recoveryPass: Int!
+}
+
+input ChangePasswordInput {
+  rut: String!
+  newPassword: String!
 }

@@ -18,9 +18,9 @@ export class Patient {
   @Field({ nullable: true })
   access_token: string | null;
 
-  @Column({ length: 6, nullable: true })
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  recovery_code: string | null;
+  recovery_code: number | null;
 
   @Column({ length: 12 })
   @Field()
@@ -86,9 +86,9 @@ export class Personnel {
   @Field({ nullable: true })
   access_token: string | null;
 
-  @Column({ length: 6, nullable: true })
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  recovery_code: string | null;
+  recovery_code: number | null;
 
   @Column({ length: 12 })
   @Field()
@@ -128,7 +128,7 @@ export class Personnel {
 }
 
 @ObjectType()
-export class CreateUserResponse {
+export class UserResponse {
   @Field()
   success: boolean;
 
