@@ -11,7 +11,6 @@ import {
   RecoveryUserInput,
   ValidateRecoveryUserInput,
 } from './dto/recovery-user.input';
-import { Void } from 'graphql-scalars/typings/typeDefs';
 
 @Resolver()
 export class AuthResolver {
