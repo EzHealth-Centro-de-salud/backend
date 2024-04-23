@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './auth/middleware/jwt.strategy';
+import { BranchModule } from './branch/branch.module';
+import { MedicalRecordModule } from './medical_record/medical_record.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 dotenv.config();
 
@@ -25,14 +28,13 @@ dotenv.config();
       database: process.env.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-      
     }),
     UserModule,
     AuthModule,
+    BranchModule,
+    MedicalRecordModule,
+    AppointmentModule,
   ],
   providers: [JwtStrategy],
 })
-
-export class AppModule {
-
-}
+export class AppModule {}

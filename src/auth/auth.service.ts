@@ -45,6 +45,7 @@ export class AuthService {
 
     const payload = { rut: patient.rut, sub: patient.id };
     patient.access_token = this.jwtService.sign(payload);
+    patient.recovery_code = null;
 
     this.patientRepository.save(patient);
 
@@ -69,6 +70,7 @@ export class AuthService {
 
     const payload = { rut: personnel.rut, sub: personnel.id };
     personnel.access_token = this.jwtService.sign(payload);
+    personnel.recovery_code = null;
 
     this.personnelRepository.save(personnel);
 
