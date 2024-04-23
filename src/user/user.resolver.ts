@@ -12,6 +12,7 @@ import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
+  //------------------------------------Patient------------------------------------
   @UseGuards(GqlAuthGuard)
   @Query((returns) => Patient)
   async getPatient(@Args('rut') rut: string) {
@@ -32,6 +33,7 @@ export class UserResolver {
     }
   }
 
+  //------------------------------------Personnel------------------------------------
   @UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnel(@Args('rut') rut: string) {
