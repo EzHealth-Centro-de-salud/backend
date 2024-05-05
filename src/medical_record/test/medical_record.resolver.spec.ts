@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MedicalRecordResolver } from './medical_record.resolver';
-import { MedicalRecordService } from './medical_record.service';
+import { MedicalRecordResolver } from '../medical_record.resolver';
+import { MedicalRecordService } from '../medical_record.service';
 
 describe('MedicalRecordResolver', () => {
   let resolver: MedicalRecordResolver;

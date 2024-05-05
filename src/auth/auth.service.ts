@@ -43,7 +43,7 @@ export class AuthService {
       throw new Error('Credenciales incorrectas.');
     }
 
-    const payload = { rut: patient.rut, sub: patient.id };
+    const payload = { rut: patient.rut, sub: patient.id, role: 'patient' };
     patient.access_token = this.jwtService.sign(payload);
     patient.recovery_code = null;
 
@@ -68,7 +68,11 @@ export class AuthService {
       throw new Error('Credenciales incorrectas.');
     }
 
-    const payload = { rut: personnel.rut, sub: personnel.id };
+    const payload = {
+      rut: personnel.rut,
+      sub: personnel.id,
+      role: 'personnel',
+    };
     personnel.access_token = this.jwtService.sign(payload);
     personnel.recovery_code = null;
 

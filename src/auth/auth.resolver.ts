@@ -18,7 +18,7 @@ export class AuthResolver {
 
   //------------------------------------Login------------------------------------
   @Mutation(() => Patient)
-  async loginPatient(@Args('loginInput') loginInput: LoginInput) {
+  async loginPatient(@Args('input') loginInput: LoginInput) {
     try {
       return await this.authService.loginPatient(loginInput);
     } catch (error) {
@@ -27,7 +27,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => Personnel)
-  async loginPersonnel(@Args('loginInput') loginInput: LoginInput) {
+  async loginPersonnel(@Args('input') loginInput: LoginInput) {
     try {
       return await this.authService.loginPersonnel(loginInput);
     } catch (error) {
@@ -37,9 +37,7 @@ export class AuthResolver {
 
   //------------------------------------Recovery Password------------------------------------
   @Mutation(() => Boolean)
-  async recoveryPatient(
-    @Args('recoveryInput') recoveryInput: RecoveryUserInput,
-  ) {
+  async recoveryPatient(@Args('input') recoveryInput: RecoveryUserInput) {
     try {
       return await this.authService.recoveryPatient(recoveryInput);
     } catch (error) {
@@ -48,9 +46,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => Boolean)
-  async recoveryPersonnel(
-    @Args('recoveryInput') recoveryInput: RecoveryUserInput,
-  ) {
+  async recoveryPersonnel(@Args('input') recoveryInput: RecoveryUserInput) {
     try {
       return await this.authService.recoveryPersonnel(recoveryInput);
     } catch (error) {
@@ -60,7 +56,7 @@ export class AuthResolver {
 
   @Mutation(() => UserResponse)
   async validateRecovery(
-    @Args('recoveryInput') recoveryInput: ValidateRecoveryUserInput,
+    @Args('input') recoveryInput: ValidateRecoveryUserInput,
   ) {
     try {
       return await this.authService.validateRecovery(recoveryInput);
@@ -71,7 +67,7 @@ export class AuthResolver {
 
   @Mutation(() => UserResponse)
   async changePasswordPatient(
-    @Args('recoveryInput') recoveryInput: ChangePasswordInput,
+    @Args('input') recoveryInput: ChangePasswordInput,
   ) {
     try {
       return await this.authService.changePasswordPatient(recoveryInput);
@@ -82,7 +78,7 @@ export class AuthResolver {
 
   @Mutation(() => UserResponse)
   async changePasswordPersonnel(
-    @Args('recoveryInput') recoveryInput: ChangePasswordInput,
+    @Args('input') recoveryInput: ChangePasswordInput,
   ) {
     try {
       return await this.authService.changePasswordPersonnel(recoveryInput);

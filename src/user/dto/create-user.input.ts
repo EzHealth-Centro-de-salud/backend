@@ -91,4 +91,8 @@ export class CreatePersonnelInput {
   @IsNotEmpty()
   @Field()
   speciality: string;
+
+  @IsNotEmpty()
+  @Field()
+  id_branch: number;
 }

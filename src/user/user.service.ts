@@ -7,6 +7,8 @@ import {
 } from './dto/create-user.input';
 import { UserResponse, Patient, Personnel } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { BranchService } from 'src/branch/branch.service';
+import { get } from 'http';
 
 @Injectable()
 export class UserService {
@@ -15,9 +17,10 @@ export class UserService {
     private patientRepository: Repository<Patient>,
     @InjectRepository(Personnel)
     private personnelRepository: Repository<Personnel>,
+    private branchService: BranchService,
   ) {}
 
-  //Other Methods
+  //------------------------------------Other Methods------------------------------------
   async isValidRut(rut: string): Promise<string> {
     const value = rut.replace(/\./g, '').replace(/-/g, '');
     const body = value.slice(0, -1);
@@ -42,10 +45,18 @@ export class UserService {
     return value;
   }
 
-  //Patient Methods
+  //------------------------------------Patient Methods------------------------------------
   async getPatientByRut(rut: string): Promise<Patient> {
     const validRut = await this.isValidRut(rut);
     return this.patientRepository.findOne({ where: { rut: validRut } });
+  }
+
+  async getPatient(id: number): Promise<Patient> {
+    return await this.patientRepository.findOne({ where: { id } });
+  }
+
+  async getAllPatients(): Promise<Patient[]> {
+    return this.patientRepository.find();
   }
 
   async createPatient(input: CreatePatientInput): Promise<UserResponse> {
@@ -71,10 +82,18 @@ export class UserService {
     return response;
   }
 
-  //Personnel Methods
+  //------------------------------------Personnel Methods------------------------------------
   async getPersonnelByRut(rut: string): Promise<Personnel> {
     const validRut = await this.isValidRut(rut);
     return this.personnelRepository.findOne({ where: { rut: validRut } });
+  }
+
+  async getPersonnel(id: number): Promise<Personnel> {
+    return await this.personnelRepository.findOne({ where: { id } });
+  }
+
+  async getAllPersonnel(): Promise<Personnel[]> {
+    return this.personnelRepository.find();
   }
 
   async createPersonnel(input: CreatePersonnelInput): Promise<UserResponse> {
@@ -84,11 +103,18 @@ export class UserService {
       throw new Error('Personal ya registrado.');
     }
 
+    const branch = await this.branchService.getBranch(input.id_branch);
+
+    if (!branch) {
+      throw new Error('Sucursal no encontrada.');
+    }
+
     const hashedPassword = await bcrypt.hash(input.password, 10);
     const newPersonnel = this.personnelRepository.create({
       ...input,
       rut: await this.isValidRut(input.rut),
       password: hashedPassword,
+      branch,
     });
 
     this.personnelRepository.save(newPersonnel);

@@ -3,12 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
-  OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Branch } from 'src/branch/entities/branch.entity';
 
 @Entity()
 @ObjectType()
+@Unique(['rut'])
 export class Patient {
   @PrimaryGeneratedColumn()
   @Field((type) => Int)
@@ -77,6 +80,7 @@ export class Patient {
 
 @Entity()
 @ObjectType()
+@Unique(['rut'])
 export class Personnel {
   @PrimaryGeneratedColumn()
   @Field((type) => Int)
@@ -125,6 +129,10 @@ export class Personnel {
   @Column({ length: 100 })
   @Field()
   speciality: string;
+
+  @ManyToOne(() => Branch, (branch) => branch.boxes)
+  @JoinColumn({ name: 'id_branch' })
+  branch: Branch;
 }
 
 @ObjectType()
