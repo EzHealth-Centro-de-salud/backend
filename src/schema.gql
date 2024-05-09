@@ -41,9 +41,27 @@ type UserResponse {
   message: String!
 }
 
+type Branch {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type MedicalRecord {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Appointment {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   getPatient(rut: String!): Patient!
   getPersonnel(rut: String!): Personnel!
+  branch(id: Int!): Branch!
+  medicalRecord(id: Int!): MedicalRecord!
+  appointment(id: Int!): Appointment!
 }
 
 type Mutation {
@@ -56,6 +74,15 @@ type Mutation {
   validateRecovery(recoveryInput: ValidateRecoveryUserInput!): UserResponse!
   changePasswordPatient(recoveryInput: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(recoveryInput: ChangePasswordInput!): UserResponse!
+  createBranch(createBranchInput: CreateBranchInput!): Branch!
+  updateBranch(updateBranchInput: UpdateBranchInput!): Branch!
+  removeBranch(id: Int!): Branch!
+  createMedicalRecord(createMedicalRecordInput: CreateMedicalRecordInput!): MedicalRecord!
+  updateMedicalRecord(updateMedicalRecordInput: UpdateMedicalRecordInput!): MedicalRecord!
+  removeMedicalRecord(id: Int!): MedicalRecord!
+  createAppointment(createAppointmentInput: CreateAppointmentInput!): Appointment!
+  updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): Appointment!
+  removeAppointment(id: Int!): Appointment!
 }
 
 input CreatePatientInput {
@@ -102,4 +129,37 @@ input ValidateRecoveryUserInput {
 input ChangePasswordInput {
   rut: String!
   newPassword: String!
+}
+
+input CreateBranchInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateBranchInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMedicalRecordInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMedicalRecordInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateAppointmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAppointmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
