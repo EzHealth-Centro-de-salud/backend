@@ -34,12 +34,12 @@ export class UserService {
       multiple = multiple < 7 ? multiple + 1 : 2;
     }
 
-    const expectedDv = 11 - (counter % 11);
-    if (
-      (expectedDv === 10 && dv !== 'K') ||
-      (expectedDv === 11 && dv !== '0') ||
-      dv !== expectedDv.toString()
-    ) {
+    let expectedDv: string | number = 11 - (counter % 11);
+    if (expectedDv === 10) expectedDv = 'K';
+    else if (expectedDv === 11) expectedDv = '0';
+    else expectedDv = expectedDv.toString();
+
+    if (dv !== expectedDv) {
       throw new Error('Rut inválido.');
     }
     return value;
