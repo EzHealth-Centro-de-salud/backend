@@ -4,5 +4,5 @@ import { MedicalRecord } from './entities/medical_record.entity';
 
 @Resolver(() => MedicalRecord)
 export class MedicalRecordResolver {
-  constructor(private readonly medicalRecordService: MedicalRecordService) {}
+  constructor(private readonly medicalRecordService: MedicalRecordService) {} 
 }
