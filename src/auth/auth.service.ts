@@ -102,14 +102,15 @@ export class AuthService {
 
   async recoveryPatient(
     recoveryUserInput: RecoveryUserInput,
-  ): Promise<Boolean> {
+  ): Promise<UserResponse> {
     const validRut = await this.userService.isValidRut(recoveryUserInput.rut);
     const patient = await this.patientRepository.findOne({
       where: { rut: validRut },
     });
 
     if (!patient) {
-      return true;
+      const response = { success: true, message: '' };
+      return response;
     }
 
     const nodemailer = require('nodemailer');
@@ -146,19 +147,21 @@ export class AuthService {
         }
       },
     );
-    return true;
+    const response = { success: true, message: '' };
+    return response;
   }
 
   async recoveryPersonnel(
     recoveryUserInput: RecoveryUserInput,
-  ): Promise<Boolean> {
+  ): Promise<UserResponse> {
     const validRut = await this.userService.isValidRut(recoveryUserInput.rut);
     const personnel = await this.personnelRepository.findOne({
       where: { rut: validRut },
     });
 
     if (!personnel) {
-      return true;
+      const response = { success: true, message: '' };
+      return response;
     }
 
     const nodemailer = require('nodemailer');
@@ -180,7 +183,7 @@ export class AuthService {
         html: `
           <h1>Restablecimiento de contraseña de la cuenta EzHealth</h1>
           <p>Hola </p> <strong>${personnel.first_name} ${personnel.surname}</strong>
-          <p>Hemos recibido una solicitud para restablecer la contraseña de su cuenta como medico.</p>
+          <p>Hemos recibido una solicitud para restablecer la contraseña de su cuenta como personal.</p>
           <p>El codigo para restablecer su contraseña es: </p> <strong>${code}</strong>
           <p>Gracias,</p>
           <p>El equipo de EzHealth</p>
@@ -195,7 +198,8 @@ export class AuthService {
         }
       },
     );
-    return true;
+    const response = { success: true, message: '' };
+    return response;
   }
 
   async validateRecovery(
@@ -242,12 +246,12 @@ export class AuthService {
     recoveryUserInput: ChangePasswordInput,
   ): Promise<UserResponse> {
     const rut = await this.userService.isValidRut(recoveryUserInput.rut);
-    const personnel = await this.patientRepository.findOne({
+    const personnel = await this.personnelRepository.findOne({
       where: { rut },
     });
     personnel.password = await bcrypt.hash(recoveryUserInput.newPassword, 10);
     personnel.recovery_code = null;
-    this.patientRepository.save(personnel);
+    this.personnelRepository.save(personnel);
 
     const success = true;
     const message = 'Contraseña cambiada con exito.';

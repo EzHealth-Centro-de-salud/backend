@@ -20,6 +20,7 @@ export class AuthResolver {
   @Mutation(() => Patient)
   async loginPatient(@Args('input') loginInput: LoginInput) {
     try {
+      console.log('-> loginPatient');
       return await this.authService.loginPatient(loginInput);
     } catch (error) {
       throw new Error(error.message);
@@ -29,6 +30,7 @@ export class AuthResolver {
   @Mutation(() => Personnel)
   async loginPersonnel(@Args('input') loginInput: LoginInput) {
     try {
+      console.log('-> loginPersonnel');
       return await this.authService.loginPersonnel(loginInput);
     } catch (error) {
       throw new Error(error.message);
@@ -36,18 +38,20 @@ export class AuthResolver {
   }
 
   //------------------------------------Recovery Password------------------------------------
-  @Mutation(() => Boolean)
+  @Mutation(() => UserResponse)
   async recoveryPatient(@Args('input') recoveryInput: RecoveryUserInput) {
     try {
+      console.log('-> recoveryPatient');
       return await this.authService.recoveryPatient(recoveryInput);
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => UserResponse)
   async recoveryPersonnel(@Args('input') recoveryInput: RecoveryUserInput) {
     try {
+      console.log('-> recoveryPersonnel');
       return await this.authService.recoveryPersonnel(recoveryInput);
     } catch (error) {
       throw new Error(error.message);
@@ -59,6 +63,7 @@ export class AuthResolver {
     @Args('input') recoveryInput: ValidateRecoveryUserInput,
   ) {
     try {
+      console.log('-> validateRecovery');
       return await this.authService.validateRecovery(recoveryInput);
     } catch (error) {
       throw new Error(error.message);
@@ -70,6 +75,7 @@ export class AuthResolver {
     @Args('input') recoveryInput: ChangePasswordInput,
   ) {
     try {
+      console.log('-> changePasswordPatient');
       return await this.authService.changePasswordPatient(recoveryInput);
     } catch (error) {
       throw new Error(error.message);
@@ -81,6 +87,7 @@ export class AuthResolver {
     @Args('input') recoveryInput: ChangePasswordInput,
   ) {
     try {
+      console.log('-> changePasswordPersonnel');
       return await this.authService.changePasswordPersonnel(recoveryInput);
     } catch (error) {
       throw new Error(error.message);
