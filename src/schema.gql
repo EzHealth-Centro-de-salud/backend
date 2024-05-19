@@ -77,8 +77,8 @@ type Mutation {
   createBox(input: CreateBoxInput!): BranchResponse!
   loginPatient(input: LoginInput!): Patient!
   loginPersonnel(input: LoginInput!): Personnel!
-  recoveryPatient(input: RecoveryUserInput!): Boolean!
-  recoveryPersonnel(input: RecoveryUserInput!): Boolean!
+  recoveryPatient(input: RecoveryUserInput!): UserResponse!
+  recoveryPersonnel(input: RecoveryUserInput!): UserResponse!
   validateRecovery(input: ValidateRecoveryUserInput!): UserResponse!
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!

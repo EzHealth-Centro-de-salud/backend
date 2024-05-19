@@ -17,6 +17,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
+    console.log('-> getPatientByRut');
     const patient = await this.userService.getPatientByRut(rut);
 
     if (!patient) {
@@ -28,6 +29,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatient(@Args('id', { type: () => Int }) id: number) {
+    console.log('-> getPatient');
     const patient = await this.userService.getPatient(id);
 
     if (!patient) {
@@ -40,12 +42,14 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => [Patient])
   async getAllPatients() {
+    console.log('-> getAllPatients');
     return await this.userService.getAllPatients();
   }
 
   @Mutation(() => UserResponse)
   async createPatient(@Args('input') patientInput: CreatePatientInput) {
     try {
+      console.log('-> createPatient');
       return await this.userService.createPatient(patientInput);
     } catch (error) {
       throw new Error(error.message);
@@ -56,6 +60,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnelByRut(@Args('rut') rut: string) {
+    console.log('-> getPersonnelByRut');
     const personnel = await this.userService.getPersonnelByRut(rut);
 
     if (!personnel) {
@@ -67,6 +72,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnel(@Args('id', { type: () => Int }) id: number) {
+    console.log('-> getPersonnel');
     const personnel = await this.userService.getPersonnel(id);
 
     if (!personnel) {
@@ -78,6 +84,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard)
   @Query((returns) => [Personnel])
   async getAllPersonnel() {
+    console.log('-> getAllPersonnel');
     return await this.userService.getAllPersonnel();
   }
 
@@ -86,6 +93,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async createPersonnel(@Args('input') personnelInput: CreatePersonnelInput) {
     try {
+      console.log('-> createPersonnel');
       return await this.userService.createPersonnel(personnelInput);
     } catch (error) {
       throw new Error(error.message);
