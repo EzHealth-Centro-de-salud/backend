@@ -14,7 +14,6 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   //------------------------------------Patient------------------------------------
-  @Roles('personnel')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
@@ -26,7 +25,6 @@ export class UserResolver {
     return patient;
   }
 
-  @Roles('personnel')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatient(@Args('id', { type: () => Int }) id: number) {
@@ -38,7 +36,7 @@ export class UserResolver {
     return patient;
   }
 
-  @Roles('personnel')
+  //@Roles('personnel')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => [Patient])
   async getAllPatients() {
@@ -83,7 +81,7 @@ export class UserResolver {
     return await this.userService.getAllPersonnel();
   }
 
-  @Roles('personnel')
+  //@Roles('personnel')
   @UseGuards(GqlAuthGuard)
   @Mutation(() => UserResponse)
   async createPersonnel(@Args('input') personnelInput: CreatePersonnelInput) {
