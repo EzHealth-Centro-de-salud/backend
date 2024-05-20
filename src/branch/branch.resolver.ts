@@ -25,7 +25,7 @@ export class BranchResolver {
     return await this.branchService.getAllBranch();
   }
 
-  @Roles('personnel')
+  //@Roles('personnel')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Mutation(() => BranchResponse)
   async createBranch(@Args('input') createBranchInput: CreateBranchInput) {
@@ -51,7 +51,7 @@ export class BranchResolver {
     return await this.branchService.getBoxesByBranch(id_branch);
   }
 
-  @Roles('personnel')
+  //@Roles('personnel')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Mutation(() => BranchResponse)
   async createBox(@Args('input') createBoxInput: CreateBoxInput) {
