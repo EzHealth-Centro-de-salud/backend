@@ -58,6 +58,7 @@ type UserResponse {
 }
 
 type Query {
+  uniqueRUT(rut: String!): UserResponse!
   getPatientByRut(rut: String!): Patient!
   getPatient(id: Int!): Patient!
   getAllPatients: [Patient!]!

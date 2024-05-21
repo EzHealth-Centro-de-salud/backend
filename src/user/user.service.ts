@@ -46,6 +46,22 @@ export class UserService {
   }
 
   //------------------------------------Patient Methods------------------------------------
+  async uniqueRUT(rut: string): Promise<UserResponse> {
+    const validRut = await this.isValidRut(rut);
+    const patient = await this.patientRepository.findOne({
+      where: { rut: validRut },
+    });
+
+    if (patient) {
+      throw new Error('Paciente ya registrado.');
+    }
+
+    const success = true;
+    const message = 'Rut válido.';
+    const response = { success, message };
+
+    return response;
+  }
   async getPatientByRut(rut: string): Promise<Patient> {
     const validRut = await this.isValidRut(rut);
     return this.patientRepository.findOne({ where: { rut: validRut } });

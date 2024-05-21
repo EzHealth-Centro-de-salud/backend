@@ -14,6 +14,16 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   //------------------------------------Patient------------------------------------
+  @Query((returns) => UserResponse)
+  async uniqueRUT(@Args('rut') rut: string) {
+    try {
+      console.log('-> uniqueRUT');
+      return await this.userService.uniqueRUT(rut);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
