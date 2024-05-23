@@ -53,7 +53,14 @@ export class AuthService {
   }
 
   async loginPersonnel(input: LoginInput): Promise<Personnel> {
-    const personnel = await this.userService.getPersonnelByRut(input.rut);
+    let personnel = null;
+    if (input.rut === 'admin') {
+      personnel = await this.personnelRepository.findOne({
+        where: { rut: input.rut },
+      });
+    } else {
+      personnel = await this.userService.getPersonnelByRut(input.rut);
+    }
 
     if (!personnel) {
       throw new Error('Credenciales incorrectas.');
