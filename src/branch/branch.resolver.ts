@@ -26,7 +26,8 @@ export class BranchResolver {
   }
 
   //@Roles('personnel')
-  @UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard)
   @Mutation(() => BranchResponse)
   async createBranch(@Args('input') createBranchInput: CreateBranchInput) {
     try {
@@ -52,7 +53,8 @@ export class BranchResolver {
   }
 
   //@Roles('personnel')
-  @UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard, RolesGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => BranchResponse)
   async createBox(@Args('input') createBoxInput: CreateBoxInput) {
     try {
