@@ -132,6 +132,7 @@ export class Personnel {
 
   @ManyToOne(() => Branch, (branch) => branch.boxes)
   @JoinColumn({ name: 'id_branch' })
+  @Field(() => Branch)
   branch: Branch;
 }
 

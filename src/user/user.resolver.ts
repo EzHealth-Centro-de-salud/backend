@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { UserResponse, Patient, Personnel } from './entities/user.entity';
 import {
@@ -8,12 +16,13 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 import { Roles, RolesGuard } from 'src/auth/decorators/role.guard';
+import { Branch } from 'src/branch/entities/branch.entity';
+import { BranchService } from 'src/branch/branch.service';
 
-@Resolver()
-export class UserResolver {
+@Resolver(() => Patient)
+export class PatientResolver {
   constructor(private readonly userService: UserService) {}
 
-  //------------------------------------Patient------------------------------------
   @Query((returns) => UserResponse)
   async uniqueRUT(@Args('rut') rut: string) {
     try {
@@ -24,7 +33,7 @@ export class UserResolver {
     }
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
     console.log('-> getPatientByRut');
@@ -36,7 +45,7 @@ export class UserResolver {
     return patient;
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => Patient)
   async getPatient(@Args('id', { type: () => Int }) id: number) {
     console.log('-> getPatient');
@@ -49,7 +58,7 @@ export class UserResolver {
   }
 
   //@Roles('personnel')
-  @UseGuards(GqlAuthGuard, RolesGuard)
+  //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query((returns) => [Patient])
   async getAllPatients() {
     console.log('-> getAllPatients');
@@ -65,9 +74,16 @@ export class UserResolver {
       throw new Error(error.message);
     }
   }
+}
 
-  //------------------------------------Personnel------------------------------------
-  @UseGuards(GqlAuthGuard)
+@Resolver(() => Personnel)
+export class PersonnelResolver {
+  constructor(
+    private readonly userService: UserService,
+    private readonly branchService: BranchService,
+  ) {}
+
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnelByRut(@Args('rut') rut: string) {
     console.log('-> getPersonnelByRut');
@@ -79,7 +95,7 @@ export class UserResolver {
     return personnel;
   }
 
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => Personnel)
   async getPersonnel(@Args('id', { type: () => Int }) id: number) {
     console.log('-> getPersonnel');
@@ -91,7 +107,7 @@ export class UserResolver {
     return personnel;
   }
 
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => [Personnel])
   async getAllPersonnel() {
     console.log('-> getAllPersonnel');
@@ -99,7 +115,7 @@ export class UserResolver {
   }
 
   //@Roles('personnel')
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Mutation(() => UserResponse)
   async createPersonnel(@Args('input') personnelInput: CreatePersonnelInput) {
     try {
@@ -108,5 +124,10 @@ export class UserResolver {
     } catch (error) {
       throw new Error(error.message);
     }
+  }
+
+  @ResolveField((returns) => [Branch])
+  async branch(@Parent() personnel: Personnel): Promise<Branch> {
+    return this.branchService.getBranchByUser(personnel.id);
   }
 }

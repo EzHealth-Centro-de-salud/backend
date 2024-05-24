@@ -29,6 +29,7 @@ export class Branch {
   boxes: Box[];
 
   @OneToMany(() => Personnel, (personnel) => personnel.branch)
+  @Field((type) => [Personnel])
   personnel: Personnel[];
 }
 

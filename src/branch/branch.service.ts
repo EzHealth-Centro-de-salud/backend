@@ -24,6 +24,12 @@ export class BranchService {
     return this.branchRepository.find();
   }
 
+  async getBranchByUser(id_user: number): Promise<Branch> {
+    return this.branchRepository.findOne({
+      where: { personnel: { id: id_user } },
+    });
+  }
+
   async createBranch(input: CreateBranchInput): Promise<BranchResponse> {
     const branch = await this.branchRepository.findOne({
       where: { address: input.address },
