@@ -11,6 +11,7 @@ type Branch {
   id: Int!
   box_count: Int!
   address: String!
+  personnel: [Personnel!]!
 }
 
 type BranchResponse {
@@ -50,6 +51,7 @@ type Personnel {
   email: String!
   role: String!
   speciality: String!
+  branch: Branch!
 }
 
 type UserResponse {
