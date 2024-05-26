@@ -42,6 +42,7 @@ export class BranchService {
     const newBranch = this.branchRepository.create({
       ...input,
       box_count: 0,
+      is_active: true,
     });
 
     await this.branchRepository.save(newBranch);
@@ -76,6 +77,7 @@ export class BranchService {
 
     const newBox = this.boxRepository.create({
       ...input,
+      is_active: true,
     });
 
     await this.boxRepository.save(newBox);

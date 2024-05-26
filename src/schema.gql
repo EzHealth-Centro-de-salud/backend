@@ -2,21 +2,45 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Appointment {
+  id: Int!
+  date_time: String!
+  type: String!
+  status: String!
+  box: Box!
+  patient: Patient!
+  personnel: Personnel!
+}
+
 type Box {
   id: Int!
   box: Int!
+  branch: Branch!
+  appointments: [Appointment!]!
+  is_active: Boolean!
 }
 
 type Branch {
   id: Int!
   box_count: Int!
   address: String!
+  boxes: [Branch!]!
   personnel: [Personnel!]!
+  is_active: Boolean!
 }
 
 type BranchResponse {
   success: Boolean!
   message: String!
+}
+
+type MedicalRecord {
+  id: Int!
+  diagnosis: String!
+  prescription: String!
+  date_time: String!
+  patient: Patient!
+  personnel: Personnel!
 }
 
 type Patient {
@@ -36,6 +60,9 @@ type Patient {
   commune: String!
   email: String!
   phone: String!
+  appointments: [Appointment!]!
+  medical_records: [MedicalRecord!]!
+  is_active: Boolean!
 }
 
 type Personnel {
@@ -52,6 +79,9 @@ type Personnel {
   role: String!
   speciality: String!
   branch: Branch!
+  appointments: [Appointment!]!
+  medical_records: [MedicalRecord!]!
+  is_active: Boolean!
 }
 
 type UserResponse {

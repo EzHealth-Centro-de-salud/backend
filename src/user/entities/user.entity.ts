@@ -4,10 +4,13 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Branch } from 'src/branch/entities/branch.entity';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
+import { MedicalRecord } from 'src/medical_record/entities/medical_record.entity';
 
 @Entity()
 @ObjectType()
@@ -76,6 +79,18 @@ export class Patient {
   @Column({ length: 9 })
   @Field()
   phone: string;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.personnel)
+  @Field((type) => [Appointment])
+  appointments: Appointment[];
+
+  @OneToMany(() => MedicalRecord, (medical_record) => medical_record.patient)
+  @Field((type) => [MedicalRecord])
+  medical_records: MedicalRecord[];
+
+  @Column()
+  @Field((type) => Boolean)
+  is_active: boolean;
 }
 
 @Entity()
@@ -134,6 +149,18 @@ export class Personnel {
   @JoinColumn({ name: 'id_branch' })
   @Field(() => Branch)
   branch: Branch;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.personnel)
+  @Field((type) => [Appointment])
+  appointments: Appointment[];
+
+  @OneToMany(() => MedicalRecord, (medical_record) => medical_record.personnel)
+  @Field((type) => [MedicalRecord])
+  medical_records: MedicalRecord[];
+
+  @Column()
+  @Field((type) => Boolean)
+  is_active: boolean;
 }
 
 @ObjectType()

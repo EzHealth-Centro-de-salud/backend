@@ -87,6 +87,7 @@ export class UserService {
       ...input,
       rut: await this.isValidRut(input.rut),
       password: hashedPassword,
+      is_active: true,
     });
 
     this.patientRepository.save(newPatient);
@@ -131,6 +132,7 @@ export class UserService {
       rut: await this.isValidRut(input.rut),
       password: hashedPassword,
       branch,
+      is_active: true,
     });
 
     this.personnelRepository.save(newPersonnel);
