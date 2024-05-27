@@ -92,7 +92,6 @@ export class CreatePersonnelInput {
   @Field()
   speciality: string;
 
-  @IsNotEmpty()
-  @Field()
+  @Field({ nullable: true })
   id_branch: number;
 }

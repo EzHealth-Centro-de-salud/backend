@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { BranchService } from './branch.service';
 import { Branch, BranchResponse } from './entities/branch.entity';
 import { CreateBranchInput } from './dto/create-branch.input';
@@ -7,19 +15,24 @@ import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 import { Roles, RolesGuard } from 'src/auth/decorators/role.guard';
 import { Box } from './entities/box.entity';
 import { CreateBoxInput } from './dto/create-box.input';
+import { UserService } from 'src/user/user.service';
+import { Personnel } from 'src/user/entities/user.entity';
 
-@Resolver()
+@Resolver(() => Branch)
 export class BranchResolver {
-  constructor(private readonly branchService: BranchService) {}
+  constructor(
+    private readonly branchService: BranchService,
+    private readonly userService: UserService,
+  ) {}
 
   //------------------------------------Branch------------------------------------
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => Branch)
   async getBranch(@Args('id', { type: () => Int }) id: number) {
     return await this.branchService.getBranch(id);
   }
 
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => [Branch])
   async getBranches() {
     return await this.branchService.getAllBranch();
@@ -37,14 +50,28 @@ export class BranchResolver {
     }
   }
 
+  @ResolveField((returns) => [Box])
+  async boxes(@Parent() branch: Branch): Promise<Box[]> {
+    return await this.branchService.getBoxesByBranch(branch.id);
+  }
+
+  @ResolveField((returns) => [Personnel])
+  async personnel(@Parent() branch: Branch): Promise<Personnel[]> {
+    return await this.userService.getPersonnelByBranch(branch.id);
+  }
+}
+
+@Resolver(() => Box)
+export class BoxResolver {
+  constructor(private readonly branchService: BranchService) {}
   //------------------------------------Box------------------------------------
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => Box)
   async getBox(@Args('id', { type: () => Int }) id: number) {
     return await this.branchService.getBox(id);
   }
 
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Query((returns) => [Box])
   async getBoxesByBranch(
     @Args('id_branch', { type: () => Int }) id_branch: number,
@@ -54,7 +81,7 @@ export class BranchResolver {
 
   //@Roles('personnel')
   //@UseGuards(GqlAuthGuard, RolesGuard)
-  @UseGuards(GqlAuthGuard)
+  //@UseGuards(GqlAuthGuard)
   @Mutation(() => BranchResponse)
   async createBox(@Args('input') createBoxInput: CreateBoxInput) {
     try {
@@ -62,5 +89,10 @@ export class BranchResolver {
     } catch (error) {
       throw new Error(error.message);
     }
+  }
+
+  @ResolveField((returns) => Branch)
+  async branch(@Parent() box: Box): Promise<Branch> {
+    return await this.branchService.getBranchByBox(box.id);
   }
 }

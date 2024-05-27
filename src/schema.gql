@@ -24,7 +24,7 @@ type Branch {
   id: Int!
   box_count: Int!
   address: String!
-  boxes: [Branch!]!
+  boxes: [Box!]!
   personnel: [Personnel!]!
   is_active: Boolean!
 }
@@ -41,6 +41,18 @@ type MedicalRecord {
   date_time: String!
   patient: Patient!
   personnel: Personnel!
+}
+
+type Availability {
+  id: Int!
+  day: String!
+  turn: String!
+  personnel: Personnel!
+}
+
+type AvailabilityResponse {
+  success: Boolean!
+  message: String!
 }
 
 type Patient {
@@ -81,6 +93,7 @@ type Personnel {
   branch: Branch!
   appointments: [Appointment!]!
   medical_records: [MedicalRecord!]!
+  availability: [Availability!]!
   is_active: Boolean!
 }
 
@@ -106,6 +119,7 @@ type Query {
 type Mutation {
   createPatient(input: CreatePatientInput!): UserResponse!
   createPersonnel(input: CreatePersonnelInput!): UserResponse!
+  assignAvailability(input: AssignAvailabilityInput!): AvailabilityResponse!
   createBranch(input: CreateBranchInput!): BranchResponse!
   createBox(input: CreateBoxInput!): BranchResponse!
   loginPatient(input: LoginInput!): Patient!
@@ -143,7 +157,12 @@ input CreatePersonnelInput {
   email: String!
   role: String!
   speciality: String!
-  id_branch: Float!
+  id_branch: Float
+}
+
+input AssignAvailabilityInput {
+  id_personnel: Float!
+  turns: String!
 }
 
 input CreateBranchInput {

@@ -26,7 +26,7 @@ export class Branch {
   address: string;
 
   @OneToMany(() => Box, (box) => box.branch)
-  @Field((type) => [Branch])
+  @Field((type) => [Box])
   boxes: Box[];
 
   @OneToMany(() => Personnel, (personnel) => personnel.branch)

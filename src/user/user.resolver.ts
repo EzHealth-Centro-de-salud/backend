@@ -18,7 +18,13 @@ import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 import { Roles, RolesGuard } from 'src/auth/decorators/role.guard';
 import { Branch } from 'src/branch/entities/branch.entity';
 import { BranchService } from 'src/branch/branch.service';
+import {
+  Availability,
+  AvailabilityResponse,
+} from './entities/availability.entity';
+import { AssignAvailabilityInput } from './dto/assign-availability.input';
 
+//------------------------------------Patient Methods------------------------------------
 @Resolver(() => Patient)
 export class PatientResolver {
   constructor(private readonly userService: UserService) {}
@@ -76,6 +82,7 @@ export class PatientResolver {
   }
 }
 
+//------------------------------------Personnel Methods------------------------------------
 @Resolver(() => Personnel)
 export class PersonnelResolver {
   constructor(
@@ -126,8 +133,31 @@ export class PersonnelResolver {
     }
   }
 
-  @ResolveField((returns) => [Branch])
+  @ResolveField((returns) => Branch)
   async branch(@Parent() personnel: Personnel): Promise<Branch> {
     return this.branchService.getBranchByUser(personnel.id);
+  }
+
+  @ResolveField((returns) => [Availability])
+  async availability(@Parent() personnel: Personnel): Promise<Availability[]> {
+    return this.userService.getAvailabilityByPersonnel(personnel.id);
+  }
+}
+
+//------------------------------------Availability Methods------------------------------------
+@Resolver(() => Availability)
+export class AvailabilityResolver {
+  constructor(private readonly userService: UserService) {}
+
+  @Mutation(() => AvailabilityResponse)
+  async assignAvailability(
+    @Args('input') availabilityInput: AssignAvailabilityInput,
+  ) {
+    try {
+      console.log('-> createAvailability');
+      return await this.userService.assignAvailability(availabilityInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

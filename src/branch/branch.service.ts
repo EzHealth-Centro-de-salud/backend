@@ -30,6 +30,12 @@ export class BranchService {
     });
   }
 
+  async getBranchByBox(id_box: number): Promise<Branch> {
+    return this.branchRepository.findOne({
+      where: { boxes: { id: id_box } },
+    });
+  }
+
   async createBranch(input: CreateBranchInput): Promise<BranchResponse> {
     const branch = await this.branchRepository.findOne({
       where: { address: input.address },
@@ -75,12 +81,20 @@ export class BranchService {
       throw new Error('Box ya registrado.');
     }
 
+    const branch = await this.branchRepository.findOne({
+      where: { id: input.id_branch },
+    });
+
     const newBox = this.boxRepository.create({
       ...input,
       is_active: true,
+      branch,
     });
 
+    branch.box_count += 1;
+
     await this.boxRepository.save(newBox);
+    await this.branchRepository.save(branch);
 
     const success = true;
     const message = 'Box creado exitosamente.';

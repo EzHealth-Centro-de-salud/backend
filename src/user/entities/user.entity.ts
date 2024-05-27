@@ -5,12 +5,15 @@ import {
   Unique,
   ManyToOne,
   OneToMany,
+  ManyToMany,
   JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Branch } from 'src/branch/entities/branch.entity';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 import { MedicalRecord } from 'src/medical_record/entities/medical_record.entity';
+import { Availability } from './availability.entity';
 
 @Entity()
 @ObjectType()
@@ -157,6 +160,10 @@ export class Personnel {
   @OneToMany(() => MedicalRecord, (medical_record) => medical_record.personnel)
   @Field((type) => [MedicalRecord])
   medical_records: MedicalRecord[];
+
+  @OneToMany(() => Availability, (availability) => availability.personnel)
+  @Field((type) => [Availability])
+  availability: Availability[];
 
   @Column()
   @Field((type) => Boolean)
