@@ -111,7 +111,7 @@ type Query {
   getPersonnel(id: Int!): Personnel!
   getAllPersonnel: [Personnel!]!
   getBranch(id: Int!): Branch!
-  getBranches: [Branch!]!
+  getAllBranches: [Branch!]!
   getBox(id: Int!): Box!
   getBoxesByBranch(id_branch: Int!): [Box!]!
 }
@@ -121,7 +121,9 @@ type Mutation {
   createPersonnel(input: CreatePersonnelInput!): UserResponse!
   assignAvailability(input: AssignAvailabilityInput!): AvailabilityResponse!
   createBranch(input: CreateBranchInput!): BranchResponse!
+  updateBranch(input: UpdateBranchInput!): Branch!
   createBox(input: CreateBoxInput!): BranchResponse!
+  updateBox(input: UpdateBoxInput!): Box!
   loginPatient(input: LoginInput!): Patient!
   loginPersonnel(input: LoginInput!): Personnel!
   recoveryPatient(input: RecoveryUserInput!): UserResponse!
@@ -169,9 +171,21 @@ input CreateBranchInput {
   address: String!
 }
 
+input UpdateBranchInput {
+  id: Float!
+  address: String
+  is_active: Boolean
+}
+
 input CreateBoxInput {
   id_branch: Float!
   box: Float!
+}
+
+input UpdateBoxInput {
+  id: Float!
+  box: Float
+  is_active: Boolean
 }
 
 input LoginInput {

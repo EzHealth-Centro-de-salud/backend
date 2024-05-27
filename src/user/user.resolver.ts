@@ -46,7 +46,7 @@ export class PatientResolver {
     const patient = await this.userService.getPatientByRut(rut);
 
     if (!patient) {
-      throw new Error('Paciente no encontrado.');
+      throw new Error('Paciente no encontrado');
     }
     return patient;
   }
@@ -58,7 +58,7 @@ export class PatientResolver {
     const patient = await this.userService.getPatient(id);
 
     if (!patient) {
-      throw new Error('Paciente no encontrado.');
+      throw new Error('Paciente no encontrado');
     }
     return patient;
   }
@@ -97,7 +97,7 @@ export class PersonnelResolver {
     const personnel = await this.userService.getPersonnelByRut(rut);
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
     return personnel;
   }
@@ -109,7 +109,7 @@ export class PersonnelResolver {
     const personnel = await this.userService.getPersonnel(id);
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
     return personnel;
   }
@@ -154,7 +154,7 @@ export class AvailabilityResolver {
     @Args('input') availabilityInput: AssignAvailabilityInput,
   ) {
     try {
-      console.log('-> createAvailability');
+      console.log('-> assignAvailability');
       return await this.userService.assignAvailability(availabilityInput);
     } catch (error) {
       throw new Error(error.message);

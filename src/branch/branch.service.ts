@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not, Equal } from 'typeorm';
 import { CreateBranchInput } from './dto/create-branch.input';
 import { Branch, BranchResponse } from './entities/branch.entity';
 import { Box, BoxResponse } from './entities/box.entity';
 import { CreateBoxInput } from './dto/create-box.input';
+import { UpdateBoxInput } from './dto/update-box.input';
+import { UpdateBranchInput } from './dto/update-branch.input';
 
 @Injectable()
 export class BranchService {
@@ -42,7 +44,7 @@ export class BranchService {
     });
 
     if (branch) {
-      throw new Error('Sucursal ya registrada.');
+      throw new Error('Sucursal ya registrada');
     }
 
     const newBranch = this.branchRepository.create({
@@ -54,10 +56,43 @@ export class BranchService {
     await this.branchRepository.save(newBranch);
 
     const success = true;
-    const message = 'Sucursal creada exitosamente.';
+    const message = 'Sucursal creada exitosamente';
     const response = { success, message };
 
     return response;
+  }
+
+  async updateBranch(input: UpdateBranchInput): Promise<Branch> {
+    const branch = await this.branchRepository.findOne({
+      where: { id: input.id },
+    });
+
+    if (!branch) {
+      throw new Error('Sucursal no encontrada');
+    }
+
+    if (input.address) {
+      const foundBranch = await this.branchRepository.findOne({
+        where: {
+          address: input.address,
+          id: Not(Equal(input.id)),
+        },
+      });
+
+      if (foundBranch) {
+        throw new Error('Sucursal ya registrada');
+      } else {
+        branch.address = input.address;
+      }
+    }
+
+    if (input.is_active !== undefined) {
+      branch.is_active = input.is_active;
+    }
+
+    await this.branchRepository.save(branch);
+
+    return branch;
   }
 
   //------------------------------------Box Methods------------------------------------
@@ -78,7 +113,7 @@ export class BranchService {
     });
 
     if (box) {
-      throw new Error('Box ya registrado.');
+      throw new Error('Box ya registrado');
     }
 
     const branch = await this.branchRepository.findOne({
@@ -97,9 +132,44 @@ export class BranchService {
     await this.branchRepository.save(branch);
 
     const success = true;
-    const message = 'Box creado exitosamente.';
+    const message = 'Box creado exitosamente';
     const response = { success, message };
 
     return response;
+  }
+
+  async updateBox(input: UpdateBoxInput): Promise<Box> {
+    console.log(input);
+    const box = await this.boxRepository.findOne({
+      where: { id: input.id },
+    });
+
+    if (!box) {
+      throw new Error('Box no encontrado.');
+    }
+
+    if (input.box) {
+      const foundBox = await this.boxRepository.findOne({
+        where: {
+          box: input.box,
+          id: Not(Equal(input.id)),
+          branch: { id: box.branch.id },
+        },
+      });
+
+      if (foundBox) {
+        throw new Error('Box ya registrado en la sucursal');
+      } else {
+        box.box = input.box;
+      }
+    }
+
+    if (input.is_active !== undefined) {
+      box.is_active = input.is_active;
+    }
+
+    await this.boxRepository.save(box);
+
+    return box;
   }
 }

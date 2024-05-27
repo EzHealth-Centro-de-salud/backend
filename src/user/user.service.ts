@@ -70,7 +70,7 @@ export class UserService {
     else expectedDv = expectedDv.toString();
 
     if (dv !== expectedDv) {
-      throw new Error('Rut inválido.');
+      throw new Error('Rut inválido');
     }
     return value;
   }
@@ -83,7 +83,7 @@ export class UserService {
     });
 
     if (patient) {
-      throw new Error('Paciente ya registrado.');
+      throw new Error('Paciente ya registrado');
     }
 
     const success = true;
@@ -109,7 +109,7 @@ export class UserService {
     const patient = await this.getPatientByRut(input.rut);
 
     if (patient) {
-      throw new Error('Paciente ya registrado.');
+      throw new Error('Paciente ya registrado');
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -123,7 +123,7 @@ export class UserService {
     this.patientRepository.save(newPatient);
 
     const success = true;
-    const message = 'Paciente creado exitosamente.';
+    const message = 'Paciente creado exitosamente';
     const response = { success, message };
 
     return response;
@@ -153,13 +153,13 @@ export class UserService {
     const personnel = await this.getPersonnelByRut(input.rut);
 
     if (personnel) {
-      throw new Error('Personal ya registrado.');
+      throw new Error('Personal ya registrado');
     }
 
     const branch = await this.branchService.getBranch(input.id_branch);
 
     if (!branch) {
-      throw new Error('Sucursal no encontrada.');
+      throw new Error('Sucursal no encontrada');
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -184,7 +184,7 @@ export class UserService {
     this.personnelRepository.save(newPersonnel);
 
     const success = true;
-    const message = 'Personal creado exitosamente.';
+    const message = 'Personal creado exitosamente';
     const response = { success, message };
 
     return response;
@@ -200,7 +200,7 @@ export class UserService {
     });
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
 
     return personnel.availability;
@@ -214,7 +214,7 @@ export class UserService {
     });
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
 
     const availability = JSON.parse(input.turns).semana;
@@ -237,7 +237,7 @@ export class UserService {
     }
 
     const success = true;
-    const message = 'Disponibilidad asignada exitosamente.';
+    const message = 'Disponibilidad asignada exitosamente';
     const response = { success, message };
 
     return response;
