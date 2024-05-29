@@ -12,6 +12,11 @@ type Appointment {
   personnel: Personnel!
 }
 
+type AppointmentResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Box {
   id: Int!
   box: Int!
@@ -110,10 +115,19 @@ type Query {
   getPersonnelByRut(rut: String!): Personnel!
   getPersonnel(id: Int!): Personnel!
   getAllPersonnel: [Personnel!]!
+  checkSchedule(input: CheckScheduleInput!): AvailabilityResponse!
+  getAvailabilityByPersonnel(id_personnel: Int!): [Availability!]!
   getBranch(id: Int!): Branch!
   getAllBranches: [Branch!]!
   getBox(id: Int!): Box!
   getBoxesByBranch(id_branch: Int!): [Box!]!
+  getAppointment(id: Int!): Appointment!
+  getAllAppointments: [Appointment!]!
+}
+
+input CheckScheduleInput {
+  id_personnel: Float!
+  date: String!
 }
 
 type Mutation {
@@ -131,6 +145,7 @@ type Mutation {
   validateRecovery(input: ValidateRecoveryUserInput!): UserResponse!
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!
+  createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -204,4 +219,11 @@ input ValidateRecoveryUserInput {
 input ChangePasswordInput {
   rut: String!
   newPassword: String!
+}
+
+input CreateAppointmentInput {
+  date_time: String!
+  type: String!
+  id_patient: Float!
+  id_personnel: Float!
 }

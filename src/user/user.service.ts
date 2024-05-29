@@ -14,6 +14,8 @@ import {
   AvailabilityResponse,
 } from './entities/availability.entity';
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
+import { complete, morning, evening } from 'src/constants/schedule';
+import { CheckScheduleInput } from './dto/check-schedule.input';
 
 dotenv.config();
 
@@ -105,6 +107,12 @@ export class UserService {
     return this.patientRepository.find();
   }
 
+  async getPatientByAppointment(id_appointment: number): Promise<Patient> {
+    return this.patientRepository.findOne({
+      where: { appointments: { id: id_appointment } },
+    });
+  }
+
   async createPatient(input: CreatePatientInput): Promise<UserResponse> {
     const patient = await this.getPatientByRut(input.rut);
 
@@ -138,6 +146,12 @@ export class UserService {
   async getPersonnelByBranch(id_branch: number): Promise<Personnel[]> {
     return this.personnelRepository.find({
       where: { branch: { id: id_branch } },
+    });
+  }
+
+  async getPersonnelByAppointment(id_appointment: number): Promise<Personnel> {
+    return this.personnelRepository.findOne({
+      where: { appointments: { id: id_appointment } },
     });
   }
 
@@ -191,6 +205,35 @@ export class UserService {
   }
 
   //------------------------------------Availability Methods------------------------------------
+  async checkSchedule(
+    input: CheckScheduleInput,
+  ): Promise<AvailabilityResponse> {
+    const personnel = await this.personnelRepository.findOne({
+      where: { id: input.id_personnel },
+      relations: ['availability'],
+    });
+
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    const date = new Date(input.date);
+    const dayNumber = date.getDay();
+
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const dayName = daysOfWeek[dayNumber];
+
+    const turn = personnel.availability.find(
+      (availability) => availability.day === dayName,
+    ).turn;
+
+    const success = true;
+    const message = 'asd';
+    const response = { success, message };
+
+    return response;
+  }
+
   async getAvailabilityByPersonnel(
     id_personnel: number,
   ): Promise<Availability[]> {

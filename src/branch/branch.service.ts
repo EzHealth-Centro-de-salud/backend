@@ -104,6 +104,12 @@ export class BranchService {
     return this.boxRepository.find({ where: { branch: { id: id_branch } } });
   }
 
+  async getBoxByAppointment(id_appointment: number): Promise<Box> {
+    return this.boxRepository.findOne({
+      where: { appointments: { id: id_appointment } },
+    });
+  }
+
   async createBox(input: CreateBoxInput): Promise<BoxResponse> {
     const box = await this.boxRepository.findOne({
       where: {
