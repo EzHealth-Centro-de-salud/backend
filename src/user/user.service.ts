@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not, Equal } from 'typeorm';
 import {
   CreatePatientInput,
   CreatePersonnelInput,
@@ -145,22 +145,29 @@ export class UserService {
 
   async getPersonnelByBranch(id_branch: number): Promise<Personnel[]> {
     return this.personnelRepository.find({
-      where: { branch: { id: id_branch } },
+      where: { branch: { id: id_branch }, role: Not(Equal('admin')) },
     });
   }
 
   async getPersonnelByAppointment(id_appointment: number): Promise<Personnel> {
     return this.personnelRepository.findOne({
-      where: { appointments: { id: id_appointment } },
+      where: {
+        appointments: { id: id_appointment },
+        role: Not(Equal('admin')),
+      },
     });
   }
 
   async getPersonnel(id: number): Promise<Personnel> {
-    return await this.personnelRepository.findOne({ where: { id } });
+    return await this.personnelRepository.findOne({
+      where: { id, role: Not(Equal('admin')) },
+    });
   }
 
   async getAllPersonnel(): Promise<Personnel[]> {
-    return this.personnelRepository.find();
+    return this.personnelRepository.find({
+      where: { role: Not(Equal('admin')) },
+    });
   }
 
   async createPersonnel(input: CreatePersonnelInput): Promise<UserResponse> {
