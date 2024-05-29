@@ -26,11 +26,16 @@ export class Branch {
   address: string;
 
   @OneToMany(() => Box, (box) => box.branch)
+  @Field((type) => [Box])
   boxes: Box[];
 
   @OneToMany(() => Personnel, (personnel) => personnel.branch)
   @Field((type) => [Personnel])
   personnel: Personnel[];
+
+  @Column()
+  @Field((type) => Boolean)
+  is_active: boolean;
 }
 
 @ObjectType()

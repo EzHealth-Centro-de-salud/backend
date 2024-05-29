@@ -31,7 +31,7 @@ export class AuthService {
     const patient = await this.userService.getPatientByRut(input.rut);
 
     if (!patient) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const validPassword = await bcrypt.compare(
@@ -40,7 +40,7 @@ export class AuthService {
     );
 
     if (!validPassword) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const payload = { rut: patient.rut, sub: patient.id, role: 'patient' };
@@ -63,7 +63,7 @@ export class AuthService {
     }
 
     if (!personnel) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const validPassword = await bcrypt.compare(
@@ -72,7 +72,7 @@ export class AuthService {
     );
 
     if (!validPassword) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const payload = {
@@ -243,7 +243,7 @@ export class AuthService {
     this.patientRepository.save(patient);
 
     const success = true;
-    const message = 'Contraseña cambiada con exito.';
+    const message = 'Contraseña cambiada con exito';
     const response = { success, message };
 
     return response;
@@ -261,7 +261,7 @@ export class AuthService {
     this.personnelRepository.save(personnel);
 
     const success = true;
-    const message = 'Contraseña cambiada con exito.';
+    const message = 'Contraseña cambiada con exito';
     const response = { success, message };
 
     return response;

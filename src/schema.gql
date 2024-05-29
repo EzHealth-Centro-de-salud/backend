@@ -2,19 +2,60 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Appointment {
+  id: Int!
+  date_time: String!
+  type: String!
+  status: String!
+  box: Box!
+  patient: Patient!
+  personnel: Personnel!
+}
+
+type AppointmentResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Box {
   id: Int!
   box: Int!
+  branch: Branch!
+  appointments: [Appointment!]!
+  is_active: Boolean!
 }
 
 type Branch {
   id: Int!
   box_count: Int!
   address: String!
+  boxes: [Box!]!
   personnel: [Personnel!]!
+  is_active: Boolean!
 }
 
 type BranchResponse {
+  success: Boolean!
+  message: String!
+}
+
+type MedicalRecord {
+  id: Int!
+  diagnosis: String!
+  prescription: String!
+  date_time: String!
+  patient: Patient!
+  personnel: Personnel!
+}
+
+type Availability {
+  id: Int!
+  day: String!
+  turn: String!
+  personnel: Personnel!
+}
+
+type AvailabilityResponse {
   success: Boolean!
   message: String!
 }
@@ -36,6 +77,9 @@ type Patient {
   commune: String!
   email: String!
   phone: String!
+  appointments: [Appointment!]!
+  medical_records: [MedicalRecord!]!
+  is_active: Boolean!
 }
 
 type Personnel {
@@ -52,6 +96,10 @@ type Personnel {
   role: String!
   speciality: String!
   branch: Branch!
+  appointments: [Appointment!]!
+  medical_records: [MedicalRecord!]!
+  availability: [Availability!]!
+  is_active: Boolean!
 }
 
 type UserResponse {
@@ -67,17 +115,29 @@ type Query {
   getPersonnelByRut(rut: String!): Personnel!
   getPersonnel(id: Int!): Personnel!
   getAllPersonnel: [Personnel!]!
+  checkSchedule(input: CheckScheduleInput!): AvailabilityResponse!
+  getAvailabilityByPersonnel(id_personnel: Int!): [Availability!]!
   getBranch(id: Int!): Branch!
-  getBranches: [Branch!]!
+  getAllBranches: [Branch!]!
   getBox(id: Int!): Box!
   getBoxesByBranch(id_branch: Int!): [Box!]!
+  getAppointment(id: Int!): Appointment!
+  getAllAppointments: [Appointment!]!
+}
+
+input CheckScheduleInput {
+  id_personnel: Float!
+  date: String!
 }
 
 type Mutation {
   createPatient(input: CreatePatientInput!): UserResponse!
   createPersonnel(input: CreatePersonnelInput!): UserResponse!
+  assignAvailability(input: AssignAvailabilityInput!): AvailabilityResponse!
   createBranch(input: CreateBranchInput!): BranchResponse!
+  updateBranch(input: UpdateBranchInput!): Branch!
   createBox(input: CreateBoxInput!): BranchResponse!
+  updateBox(input: UpdateBoxInput!): Box!
   loginPatient(input: LoginInput!): Patient!
   loginPersonnel(input: LoginInput!): Personnel!
   recoveryPatient(input: RecoveryUserInput!): UserResponse!
@@ -85,6 +145,7 @@ type Mutation {
   validateRecovery(input: ValidateRecoveryUserInput!): UserResponse!
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!
+  createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -113,16 +174,33 @@ input CreatePersonnelInput {
   email: String!
   role: String!
   speciality: String!
-  id_branch: Float!
+  id_branch: Float
+}
+
+input AssignAvailabilityInput {
+  id_personnel: Float!
+  turns: String!
 }
 
 input CreateBranchInput {
   address: String!
 }
 
+input UpdateBranchInput {
+  id: Float!
+  address: String
+  is_active: Boolean
+}
+
 input CreateBoxInput {
   id_branch: Float!
   box: Float!
+}
+
+input UpdateBoxInput {
+  id: Float!
+  box: Float
+  is_active: Boolean
 }
 
 input LoginInput {
@@ -141,4 +219,11 @@ input ValidateRecoveryUserInput {
 input ChangePasswordInput {
   rut: String!
   newPassword: String!
+}
+
+input CreateAppointmentInput {
+  date_time: String!
+  type: String!
+  id_patient: Float!
+  id_personnel: Float!
 }

@@ -18,7 +18,14 @@ import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 import { Roles, RolesGuard } from 'src/auth/decorators/role.guard';
 import { Branch } from 'src/branch/entities/branch.entity';
 import { BranchService } from 'src/branch/branch.service';
+import {
+  Availability,
+  AvailabilityResponse,
+} from './entities/availability.entity';
+import { AssignAvailabilityInput } from './dto/assign-availability.input';
+import { CheckScheduleInput } from './dto/check-schedule.input';
 
+//------------------------------------Patient Methods------------------------------------
 @Resolver(() => Patient)
 export class PatientResolver {
   constructor(private readonly userService: UserService) {}
@@ -40,7 +47,7 @@ export class PatientResolver {
     const patient = await this.userService.getPatientByRut(rut);
 
     if (!patient) {
-      throw new Error('Paciente no encontrado.');
+      throw new Error('Paciente no encontrado');
     }
     return patient;
   }
@@ -52,7 +59,7 @@ export class PatientResolver {
     const patient = await this.userService.getPatient(id);
 
     if (!patient) {
-      throw new Error('Paciente no encontrado.');
+      throw new Error('Paciente no encontrado');
     }
     return patient;
   }
@@ -76,6 +83,7 @@ export class PatientResolver {
   }
 }
 
+//------------------------------------Personnel Methods------------------------------------
 @Resolver(() => Personnel)
 export class PersonnelResolver {
   constructor(
@@ -90,7 +98,7 @@ export class PersonnelResolver {
     const personnel = await this.userService.getPersonnelByRut(rut);
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
     return personnel;
   }
@@ -102,7 +110,7 @@ export class PersonnelResolver {
     const personnel = await this.userService.getPersonnel(id);
 
     if (!personnel) {
-      throw new Error('Personal no encontrado.');
+      throw new Error('Personal no encontrado');
     }
     return personnel;
   }
@@ -126,8 +134,53 @@ export class PersonnelResolver {
     }
   }
 
-  @ResolveField((returns) => [Branch])
+  @ResolveField((returns) => Branch)
   async branch(@Parent() personnel: Personnel): Promise<Branch> {
     return this.branchService.getBranchByUser(personnel.id);
+  }
+
+  @ResolveField((returns) => [Availability])
+  async availability(@Parent() personnel: Personnel): Promise<Availability[]> {
+    return this.userService.getAvailabilityByPersonnel(personnel.id);
+  }
+}
+
+//------------------------------------Availability Methods------------------------------------
+@Resolver(() => Availability)
+export class AvailabilityResolver {
+  constructor(private readonly userService: UserService) {}
+
+  @Query(() => AvailabilityResponse)
+  async checkSchedule(@Args('input') scheduleInput: CheckScheduleInput) {
+    try {
+      console.log('-> checkSchedule');
+      return await this.userService.checkSchedule(scheduleInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Query(() => [Availability])
+  async getAvailabilityByPersonnel(
+    @Args('id_personnel', { type: () => Int }) id_personnel: number,
+  ) {
+    try {
+      console.log('-> getAvailabilityByPersonnel');
+      return await this.userService.getAvailabilityByPersonnel(id_personnel);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Mutation(() => AvailabilityResponse)
+  async assignAvailability(
+    @Args('input') availabilityInput: AssignAvailabilityInput,
+  ) {
+    try {
+      console.log('-> assignAvailability');
+      return await this.userService.assignAvailability(availabilityInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

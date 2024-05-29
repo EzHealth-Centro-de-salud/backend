@@ -8,7 +8,16 @@ import {
 import { UserResponse, Patient, Personnel } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { BranchService } from 'src/branch/branch.service';
-import { get } from 'http';
+import * as dotenv from 'dotenv';
+import {
+  Availability,
+  AvailabilityResponse,
+} from './entities/availability.entity';
+import { AssignAvailabilityInput } from './dto/assign-availability.input';
+import { complete, morning, evening } from 'src/constants/schedule';
+import { CheckScheduleInput } from './dto/check-schedule.input';
+
+dotenv.config();
 
 @Injectable()
 export class UserService {
@@ -17,10 +26,33 @@ export class UserService {
     private patientRepository: Repository<Patient>,
     @InjectRepository(Personnel)
     private personnelRepository: Repository<Personnel>,
+    @InjectRepository(Availability)
+    private availabilityRepository: Repository<Availability>,
     private branchService: BranchService,
   ) {}
 
   //------------------------------------Other Methods------------------------------------
+  async onModuleInit() {
+    const found1 = await this.personnelRepository.findOne({
+      where: { role: 'admin' },
+    });
+    if (!found1) {
+      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASS, 10);
+      const admin = this.personnelRepository.create({
+        rut: process.env.ADMIN_RUT,
+        password: hashedPassword,
+        first_name: process.env.ADMIN_FIRST_NAME,
+        surname: process.env.ADMIN_SURNAME,
+        email: process.env.ADMIN_EMAIL,
+        role: 'admin',
+        speciality: 'admin',
+        is_active: true,
+      });
+
+      this.personnelRepository.save(admin);
+    }
+  }
+
   async isValidRut(rut: string): Promise<string> {
     const value = rut.replace(/\./g, '').replace(/-/g, '');
     const body = value.slice(0, -1);
@@ -40,7 +72,7 @@ export class UserService {
     else expectedDv = expectedDv.toString();
 
     if (dv !== expectedDv) {
-      throw new Error('Rut inválido.');
+      throw new Error('Rut inválido');
     }
     return value;
   }
@@ -53,7 +85,7 @@ export class UserService {
     });
 
     if (patient) {
-      throw new Error('Paciente ya registrado.');
+      throw new Error('Paciente ya registrado');
     }
 
     const success = true;
@@ -75,11 +107,17 @@ export class UserService {
     return this.patientRepository.find();
   }
 
+  async getPatientByAppointment(id_appointment: number): Promise<Patient> {
+    return this.patientRepository.findOne({
+      where: { appointments: { id: id_appointment } },
+    });
+  }
+
   async createPatient(input: CreatePatientInput): Promise<UserResponse> {
     const patient = await this.getPatientByRut(input.rut);
 
     if (patient) {
-      throw new Error('Paciente ya registrado.');
+      throw new Error('Paciente ya registrado');
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -87,12 +125,13 @@ export class UserService {
       ...input,
       rut: await this.isValidRut(input.rut),
       password: hashedPassword,
+      is_active: true,
     });
 
     this.patientRepository.save(newPatient);
 
     const success = true;
-    const message = 'Paciente creado exitosamente.';
+    const message = 'Paciente creado exitosamente';
     const response = { success, message };
 
     return response;
@@ -102,6 +141,18 @@ export class UserService {
   async getPersonnelByRut(rut: string): Promise<Personnel> {
     const validRut = await this.isValidRut(rut);
     return this.personnelRepository.findOne({ where: { rut: validRut } });
+  }
+
+  async getPersonnelByBranch(id_branch: number): Promise<Personnel[]> {
+    return this.personnelRepository.find({
+      where: { branch: { id: id_branch } },
+    });
+  }
+
+  async getPersonnelByAppointment(id_appointment: number): Promise<Personnel> {
+    return this.personnelRepository.findOne({
+      where: { appointments: { id: id_appointment } },
+    });
   }
 
   async getPersonnel(id: number): Promise<Personnel> {
@@ -116,27 +167,120 @@ export class UserService {
     const personnel = await this.getPersonnelByRut(input.rut);
 
     if (personnel) {
-      throw new Error('Personal ya registrado.');
+      throw new Error('Personal ya registrado');
     }
 
     const branch = await this.branchService.getBranch(input.id_branch);
 
     if (!branch) {
-      throw new Error('Sucursal no encontrada.');
+      throw new Error('Sucursal no encontrada');
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
-    const newPersonnel = this.personnelRepository.create({
-      ...input,
-      rut: await this.isValidRut(input.rut),
-      password: hashedPassword,
-      branch,
-    });
+    let newPersonnel = null;
+    if (input.role === 'admin') {
+      newPersonnel = this.personnelRepository.create({
+        ...input,
+        rut: await this.isValidRut(input.rut),
+        password: hashedPassword,
+        is_active: true,
+      });
+    } else {
+      newPersonnel = this.personnelRepository.create({
+        ...input,
+        rut: await this.isValidRut(input.rut),
+        password: hashedPassword,
+        is_active: true,
+        branch,
+      });
+    }
 
     this.personnelRepository.save(newPersonnel);
 
     const success = true;
-    const message = 'Personal creado exitosamente.';
+    const message = 'Personal creado exitosamente';
+    const response = { success, message };
+
+    return response;
+  }
+
+  //------------------------------------Availability Methods------------------------------------
+  async checkSchedule(
+    input: CheckScheduleInput,
+  ): Promise<AvailabilityResponse> {
+    const personnel = await this.personnelRepository.findOne({
+      where: { id: input.id_personnel },
+      relations: ['availability'],
+    });
+
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    const date = new Date(input.date);
+    const dayNumber = date.getDay();
+
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const dayName = daysOfWeek[dayNumber];
+
+    const turn = personnel.availability.find(
+      (availability) => availability.day === dayName,
+    ).turn;
+
+    const success = true;
+    const message = 'asd';
+    const response = { success, message };
+
+    return response;
+  }
+
+  async getAvailabilityByPersonnel(
+    id_personnel: number,
+  ): Promise<Availability[]> {
+    const personnel = await this.personnelRepository.findOne({
+      where: { id: id_personnel },
+      relations: ['availability'],
+    });
+
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    return personnel.availability;
+  }
+
+  async assignAvailability(
+    input: AssignAvailabilityInput,
+  ): Promise<AvailabilityResponse> {
+    const personnel = await this.personnelRepository.findOne({
+      where: { id: input.id_personnel },
+    });
+
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    const availability = JSON.parse(input.turns).semana;
+
+    for (const turn of availability) {
+      let availability = await this.availabilityRepository.findOne({
+        where: { personnel: { id: input.id_personnel }, day: turn.dia },
+      });
+      if (availability) {
+        availability.turn = turn.turno;
+        await this.availabilityRepository.save(availability);
+      } else {
+        availability = this.availabilityRepository.create({
+          personnel,
+          day: turn.dia,
+          turn: turn.turno,
+        });
+        await this.availabilityRepository.save(availability);
+      }
+    }
+
+    const success = true;
+    const message = 'Disponibilidad asignada exitosamente';
     const response = { success, message };
 
     return response;
