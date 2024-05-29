@@ -148,9 +148,9 @@ export class Personnel {
   @Field()
   speciality: string;
 
-  @ManyToOne(() => Branch, (branch) => branch.boxes)
+  @ManyToOne(() => Branch, (branch) => branch.personnel)
   @JoinColumn({ name: 'id_branch' })
-  @Field(() => Branch)
+  @Field(() => Branch, { nullable: true })
   branch: Branch;
 
   @OneToMany(() => Appointment, (appointment) => appointment.personnel)

@@ -95,7 +95,7 @@ type Personnel {
   email: String!
   role: String!
   speciality: String!
-  branch: Branch!
+  branch: Branch
   appointments: [Appointment!]!
   medical_records: [MedicalRecord!]!
   availability: [Availability!]!
