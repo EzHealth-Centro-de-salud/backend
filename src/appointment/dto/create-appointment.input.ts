@@ -5,7 +5,11 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateAppointmentInput {
   @IsNotEmpty()
   @Field()
-  date_time: string;
+  date: string;
+
+  @IsNotEmpty()
+  @Field()
+  time: string;
 
   @IsNotEmpty()
   @Field()

@@ -13,7 +13,7 @@ import { Patient, Personnel } from 'src/user/entities/user.entity';
 
 @Entity()
 @ObjectType()
-@Unique(['date_time', 'box'])
+@Unique(['date', 'time', 'personnel', 'patient'])
 export class Appointment {
   @PrimaryGeneratedColumn()
   @Field((type) => Int)
@@ -21,7 +21,11 @@ export class Appointment {
 
   @Column()
   @Field()
-  date_time: string;
+  date: string;
+
+  @Column()
+  @Field()
+  time: string;
 
   @Column({ length: 100 })
   @Field()

@@ -19,7 +19,10 @@ export class BranchService {
 
   //------------------------------------Branch Methods------------------------------------
   async getBranch(id: number): Promise<Branch> {
-    return this.branchRepository.findOne({ where: { id } });
+    return this.branchRepository.findOne({
+      where: { id },
+      relations: ['boxes'],
+    });
   }
 
   async getAllBranch(): Promise<Branch[]> {
@@ -29,6 +32,7 @@ export class BranchService {
   async getBranchByUser(id_user: number): Promise<Branch> {
     return this.branchRepository.findOne({
       where: { personnel: { id: id_user } },
+      relations: ['boxes'],
     });
   }
 

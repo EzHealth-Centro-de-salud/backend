@@ -14,8 +14,10 @@ import {
   AvailabilityResponse,
 } from './entities/availability.entity';
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
-import { complete, morning, evening } from 'src/constants/schedule';
+import { semana, completo, mañana, tarde } from 'src/constants/schedule';
 import { CheckScheduleInput } from './dto/check-schedule.input';
+import { AppointmentService } from 'src/appointment/appointment.service';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 dotenv.config();
 
@@ -28,15 +30,17 @@ export class UserService {
     private personnelRepository: Repository<Personnel>,
     @InjectRepository(Availability)
     private availabilityRepository: Repository<Availability>,
+    @InjectRepository(Appointment)
+    private appointmentRepository: Repository<Appointment>,
     private branchService: BranchService,
   ) {}
 
   //------------------------------------Other Methods------------------------------------
   async onModuleInit() {
-    const found1 = await this.personnelRepository.findOne({
+    const found = await this.personnelRepository.findOne({
       where: { role: 'admin' },
     });
-    if (!found1) {
+    if (!found) {
       const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASS, 10);
       const admin = this.personnelRepository.create({
         rut: process.env.ADMIN_RUT,
@@ -161,6 +165,7 @@ export class UserService {
   async getPersonnel(id: number): Promise<Personnel> {
     return await this.personnelRepository.findOne({
       where: { id, role: Not(Equal('admin')) },
+      relations: ['availability', 'branch', 'appointments'],
     });
   }
 
@@ -217,25 +222,83 @@ export class UserService {
   ): Promise<AvailabilityResponse> {
     const personnel = await this.personnelRepository.findOne({
       where: { id: input.id_personnel },
-      relations: ['availability'],
+      relations: ['availability', 'branch', 'appointments'],
     });
-
     if (!personnel) {
       throw new Error('Personal no encontrado');
     }
 
+    // Filter appointments by date
+    personnel.appointments = personnel.appointments.filter(
+      (app) => app.date === input.date,
+    );
+
+    // Get turn by day name
     const date = new Date(input.date);
-    const dayNumber = date.getDay();
+    const dayName = semana[date.getDay()];
 
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    const dayName = daysOfWeek[dayNumber];
+    if (dayName === 'sábado' || dayName === 'domingo') {
+      throw new Error('No hay atención los fines de semana');
+    }
 
-    const turn = personnel.availability.find(
-      (availability) => availability.day === dayName,
-    ).turn;
+    const turn = personnel.availability.find((a) => a.day === dayName).turn;
+    let schedule = null;
+
+    if (turn === 'completo') {
+      schedule = completo;
+    } else if (turn === 'mañana') {
+      schedule = mañana;
+    } else if (turn === 'tarde') {
+      schedule = tarde;
+    } else {
+      throw new Error('Sin disponibilidad');
+    }
+
+    // Filter schedule by current time
+    const current = new Date();
+    const year = current.getFullYear();
+    const month = String(current.getMonth() + 1).padStart(2, '0');
+    const day = String(current.getDate()).padStart(2, '0');
+    const currentDate = `${year}-${month}-${day}`;
+
+    if (currentDate === input.date) {
+      console.log('today');
+      schedule = schedule.filter((time) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return (
+          hours > current.getHours() ||
+          (hours === current.getHours() && minutes > current.getMinutes())
+        );
+      });
+    }
+
+    // Filter schedule by appointments and status
+    schedule = schedule.filter((time) => {
+      const appointment = personnel.appointments.find(
+        (app) => app.time === time,
+      );
+      return !appointment || appointment.status === 'Cancelada';
+    });
+
+    // Filter schedule by boxes availability
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        date: input.date,
+        box: { branch: personnel.branch },
+      },
+      relations: ['box'],
+    });
+
+    schedule = schedule.filter((time) => {
+      const appointmentsCount = appointments.filter(
+        (app) => app.time === time,
+      ).length;
+
+      return appointmentsCount < personnel.branch.box_count;
+    });
 
     const success = true;
-    const message = 'asd';
+    const message = JSON.stringify(schedule);
     const response = { success, message };
 
     return response;

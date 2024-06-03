@@ -9,10 +9,11 @@ import {
 import { UserService } from './user.service';
 import { BranchModule } from 'src/branch/branch.module';
 import { Availability } from './entities/availability.entity';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Patient, Personnel, Availability]),
+    TypeOrmModule.forFeature([Patient, Personnel, Availability, Appointment]),
     BranchModule,
   ],
   providers: [
