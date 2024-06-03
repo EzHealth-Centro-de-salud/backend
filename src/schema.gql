@@ -22,7 +22,7 @@ type Box {
   id: Int!
   box: Int!
   branch: Branch!
-  appointments: [Appointment!]!
+  appointments: [Appointment!]
   is_active: Boolean!
 }
 
@@ -30,8 +30,8 @@ type Branch {
   id: Int!
   box_count: Int!
   address: String!
-  boxes: [Box!]!
-  personnel: [Personnel!]!
+  boxes: [Box!]
+  personnel: [Personnel!]
   is_active: Boolean!
 }
 
@@ -78,8 +78,8 @@ type Patient {
   commune: String!
   email: String!
   phone: String!
-  appointments: [Appointment!]!
-  medical_records: [MedicalRecord!]!
+  appointments: [Appointment!]
+  medical_records: [MedicalRecord!]
   is_active: Boolean!
 }
 
@@ -98,8 +98,8 @@ type Personnel {
   speciality: String!
   branch: Branch
   appointments: [Appointment!]
-  medical_records: [MedicalRecord!]!
-  availability: [Availability!]!
+  medical_records: [MedicalRecord!]
+  availability: [Availability!]
   is_active: Boolean!
 }
 
