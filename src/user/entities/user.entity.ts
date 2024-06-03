@@ -5,9 +5,7 @@ import {
   Unique,
   ManyToOne,
   OneToMany,
-  ManyToMany,
   JoinColumn,
-  JoinTable,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Branch } from 'src/branch/entities/branch.entity';
@@ -20,7 +18,7 @@ import { Availability } from './availability.entity';
 @Unique(['rut'])
 export class Patient {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column({ nullable: true })
@@ -84,11 +82,11 @@ export class Patient {
   phone: string;
 
   @OneToMany(() => Appointment, (appointment) => appointment.personnel)
-  @Field((type) => [Appointment])
+  @Field(() => [Appointment], { nullable: true })
   appointments: Appointment[];
 
   @OneToMany(() => MedicalRecord, (medical_record) => medical_record.patient)
-  @Field((type) => [MedicalRecord])
+  @Field(() => [MedicalRecord], { nullable: true })
   medical_records: MedicalRecord[];
 
   @Column()
@@ -101,7 +99,7 @@ export class Patient {
 @Unique(['rut'])
 export class Personnel {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column({ nullable: true })
@@ -154,19 +152,19 @@ export class Personnel {
   branch: Branch;
 
   @OneToMany(() => Appointment, (appointment) => appointment.personnel)
-  @Field((type) => [Appointment])
+  @Field(() => [Appointment], { nullable: true })
   appointments: Appointment[];
 
   @OneToMany(() => MedicalRecord, (medical_record) => medical_record.personnel)
-  @Field((type) => [MedicalRecord])
+  @Field(() => [MedicalRecord], { nullable: true })
   medical_records: MedicalRecord[];
 
   @OneToMany(() => Availability, (availability) => availability.personnel)
-  @Field((type) => [Availability])
+  @Field(() => [Availability], { nullable: true })
   availability: Availability[];
 
   @Column()
-  @Field((type) => Boolean)
+  @Field(() => Boolean)
   is_active: boolean;
 }
 

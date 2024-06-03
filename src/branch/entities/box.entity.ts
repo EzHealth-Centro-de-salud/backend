@@ -16,11 +16,11 @@ import { Appointment } from 'src/appointment/entities/appointment.entity';
 @Unique(['box', 'branch'])
 export class Box {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column()
-  @Field((type) => Int)
+  @Field(() => Int)
   box: number;
 
   @ManyToOne(() => Branch, (branch) => branch.boxes)
@@ -29,11 +29,11 @@ export class Box {
   branch: Branch;
 
   @OneToMany(() => Appointment, (appointment) => appointment.box)
-  @Field((type) => [Appointment])
+  @Field(() => [Appointment], { nullable: true })
   appointments: Appointment[];
 
   @Column()
-  @Field((type) => Boolean)
+  @Field(() => Boolean)
   is_active: boolean;
 }
 
