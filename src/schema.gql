@@ -97,7 +97,7 @@ type Personnel {
   role: String!
   speciality: String!
   branch: Branch
-  appointments: [Appointment!]!
+  appointments: [Appointment!]
   medical_records: [MedicalRecord!]!
   availability: [Availability!]!
   is_active: Boolean!
