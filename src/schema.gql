@@ -4,7 +4,8 @@
 
 type Appointment {
   id: Int!
-  date_time: String!
+  date: String!
+  time: String!
   type: String!
   status: String!
   box: Box!
@@ -222,7 +223,8 @@ input ChangePasswordInput {
 }
 
 input CreateAppointmentInput {
-  date_time: String!
+  date: String!
+  time: String!
   type: String!
   id_patient: Float!
   id_personnel: Float!

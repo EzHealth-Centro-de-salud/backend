@@ -1,4 +1,14 @@
-export const complete = [
+export const semana = [
+  'lunes',
+  'martes',
+  'miércoles',
+  'jueves',
+  'viernes',
+  'sábado',
+  'domingo',
+];
+
+export const completo = [
   '08:00',
   '08:30',
   '09:00',
@@ -23,10 +33,9 @@ export const complete = [
   '18:30',
   '19:00',
   '19:30',
-  '20:00',
 ];
 
-export const morning = [
+export const mañana = [
   '08:00',
   '08:30',
   '09:00',
@@ -41,7 +50,7 @@ export const morning = [
   '13:30',
 ];
 
-export const evening = [
+export const tarde = [
   '14:00',
   '14:30',
   '15:00',
@@ -54,5 +63,4 @@ export const evening = [
   '18:30',
   '19:00',
   '19:30',
-  '20:00',
 ];
