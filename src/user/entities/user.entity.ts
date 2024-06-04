@@ -27,6 +27,10 @@ export class Patient {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  fcmToken: string | null;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   recovery_code: number | null;
 
   @Column({ length: 12 })
@@ -90,7 +94,7 @@ export class Patient {
   medical_records: MedicalRecord[];
 
   @Column()
-  @Field((type) => Boolean)
+  @Field(() => Boolean)
   is_active: boolean;
 }
 
@@ -108,6 +112,10 @@ export class Personnel {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  fcmToken: string | null;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   recovery_code: number | null;
 
   @Column({ length: 12 })

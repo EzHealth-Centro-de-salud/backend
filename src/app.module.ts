@@ -10,6 +10,7 @@ import { JwtStrategy } from './auth/middleware/jwt.strategy';
 import { BranchModule } from './branch/branch.module';
 import { MedicalRecordModule } from './medical_record/medical_record.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { NotificationModule } from './notification/notification.module';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ dotenv.config();
     BranchModule,
     MedicalRecordModule,
     AppointmentModule,
+    NotificationModule,
   ],
   providers: [JwtStrategy],
 })

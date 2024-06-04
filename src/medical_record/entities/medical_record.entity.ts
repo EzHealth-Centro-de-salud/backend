@@ -14,7 +14,7 @@ import { Patient, Personnel } from 'src/user/entities/user.entity';
 @ObjectType()
 export class MedicalRecord {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column({ length: 255 })

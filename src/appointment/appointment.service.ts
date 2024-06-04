@@ -65,7 +65,7 @@ export class AppointmentService {
     });
 
     if (appointmentPersonnelFound) {
-      throw new Error('El profesional ya tiene una cita en ese horario');
+      throw new Error('El medico ya tiene una cita en ese horario');
     }
 
     const scheduleInput = {
@@ -78,9 +78,7 @@ export class AppointmentService {
     const isAvailable = schedule.message.includes(input.time);
 
     if (!isAvailable) {
-      throw new Error(
-        'El profesional ya no tiene disponibilidad para ese horario',
-      );
+      throw new Error('El medico no tiene disponibilidad para ese horario');
     }
 
     const appointments = await this.appointmentRepository.find({

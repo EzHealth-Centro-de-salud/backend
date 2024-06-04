@@ -16,7 +16,7 @@ import { Patient, Personnel } from 'src/user/entities/user.entity';
 @Unique(['date', 'time', 'personnel', 'patient'])
 export class Appointment {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column()

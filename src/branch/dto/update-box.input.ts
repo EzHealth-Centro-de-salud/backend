@@ -1,15 +1,15 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class UpdateBoxInput {
-  @Field()
   @IsNotEmpty()
+  @Field(() => Int)
   id: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   box: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   is_active: boolean;
 }
