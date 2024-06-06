@@ -13,7 +13,7 @@ import {
   CreatePatientInput,
   CreatePersonnelInput,
 } from './dto/create-user.input';
-import { UseGuards } from '@nestjs/common';
+import { Res, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/middleware/jwt.auth.guard';
 import { Roles, RolesGuard } from 'src/auth/decorators/role.guard';
 import { Branch } from 'src/branch/entities/branch.entity';
@@ -24,6 +24,7 @@ import {
 } from './entities/availability.entity';
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
 import { CheckScheduleInput } from './dto/check-schedule.input';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 //------------------------------------Patient Methods------------------------------------
 @Resolver(() => Patient)
@@ -81,6 +82,11 @@ export class PatientResolver {
       throw new Error(error.message);
     }
   }
+
+  @ResolveField(() => [Appointment])
+  async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
+    return this.userService.getAppointmentsByPatient(patient.id);
+  }
 }
 
 //------------------------------------Personnel Methods------------------------------------
@@ -134,14 +140,19 @@ export class PersonnelResolver {
     }
   }
 
-  @ResolveField((returns) => Branch)
+  @ResolveField(() => Branch)
   async branch(@Parent() personnel: Personnel): Promise<Branch> {
     return this.branchService.getBranchByUser(personnel.id);
   }
 
-  @ResolveField((returns) => [Availability])
+  @ResolveField(() => [Availability])
   async availability(@Parent() personnel: Personnel): Promise<Availability[]> {
     return this.userService.getAvailabilityByPersonnel(personnel.id);
+  }
+
+  @ResolveField(() => [Appointment])
+  async appointments(@Parent() personnel: Personnel): Promise<Appointment[]> {
+    return this.userService.getAppointmentsByPersonnel(personnel.id);
   }
 }
 

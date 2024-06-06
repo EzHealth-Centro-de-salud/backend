@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
@@ -16,10 +16,10 @@ export class CreateAppointmentInput {
   type: string;
 
   @IsNotEmpty()
-  @Field()
+  @Field(() => Int)
   id_patient: number;
 
   @IsNotEmpty()
-  @Field()
+  @Field(() => Int)
   id_personnel: number;
 }

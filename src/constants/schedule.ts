@@ -8,6 +8,21 @@ export const semana = [
   'domingo',
 ];
 
+export const meses = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre',
+];
+
 export const completo = [
   '08:00',
   '08:30',

@@ -16,7 +16,6 @@ import {
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
 import { semana, completo, mañana, tarde } from 'src/constants/schedule';
 import { CheckScheduleInput } from './dto/check-schedule.input';
-import { AppointmentService } from 'src/appointment/appointment.service';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 dotenv.config();
@@ -117,6 +116,12 @@ export class UserService {
     });
   }
 
+  async getAppointmentsByPatient(id_patient: number): Promise<Appointment[]> {
+    return this.appointmentRepository.find({
+      where: { patient: { id: id_patient } },
+    });
+  }
+
   async createPatient(input: CreatePatientInput): Promise<UserResponse> {
     const patient = await this.getPatientByRut(input.rut);
 
@@ -172,6 +177,14 @@ export class UserService {
   async getAllPersonnel(): Promise<Personnel[]> {
     return this.personnelRepository.find({
       where: { role: Not(Equal('admin')) },
+    });
+  }
+
+  async getAppointmentsByPersonnel(
+    id_personnel: number,
+  ): Promise<Appointment[]> {
+    return this.appointmentRepository.find({
+      where: { personnel: { id: id_personnel } },
     });
   }
 
@@ -296,6 +309,8 @@ export class UserService {
 
       return appointmentsCount < personnel.branch.box_count;
     });
+
+    if (schedule.length === 0) throw new Error('Sin disponibilidad');
 
     const success = true;
     const message = JSON.stringify(schedule);

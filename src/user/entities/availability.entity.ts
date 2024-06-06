@@ -14,7 +14,7 @@ import { Personnel } from './user.entity';
 @Unique(['day', 'turn', 'personnel'])
 export class Availability {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column()
@@ -27,7 +27,7 @@ export class Availability {
 
   @ManyToOne(() => Personnel, (personnel) => personnel.availability)
   @JoinColumn({ name: 'id_personnel' })
-  @Field((type) => Personnel)
+  @Field(() => Personnel)
   personnel: Personnel;
 }
 

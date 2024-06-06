@@ -64,7 +64,8 @@ type AvailabilityResponse {
 type Patient {
   id: Int!
   access_token: String
-  recovery_code: Float
+  fcmToken: String
+  recovery_code: Int
   rut: String!
   password: String!
   birthdate: String!
@@ -86,7 +87,8 @@ type Patient {
 type Personnel {
   id: Int!
   access_token: String
-  recovery_code: Float
+  fcmToken: String
+  recovery_code: Int
   rut: String!
   password: String!
   first_name: String!
@@ -108,6 +110,11 @@ type UserResponse {
   message: String!
 }
 
+type Notification {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   uniqueRUT(rut: String!): UserResponse!
   getPatientByRut(rut: String!): Patient!
@@ -124,10 +131,11 @@ type Query {
   getBoxesByBranch(id_branch: Int!): [Box!]!
   getAppointment(id: Int!): Appointment!
   getAllAppointments: [Appointment!]!
+  notification(id: Int!): Notification!
 }
 
 input CheckScheduleInput {
-  id_personnel: Float!
+  id_personnel: Int!
   date: String!
 }
 
@@ -147,6 +155,9 @@ type Mutation {
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!
   createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  removeNotification(id: Int!): Notification!
 }
 
 input CreatePatientInput {
@@ -175,11 +186,11 @@ input CreatePersonnelInput {
   email: String!
   role: String!
   speciality: String!
-  id_branch: Float
+  id_branch: Int
 }
 
 input AssignAvailabilityInput {
-  id_personnel: Float!
+  id_personnel: Int!
   turns: String!
 }
 
@@ -188,20 +199,20 @@ input CreateBranchInput {
 }
 
 input UpdateBranchInput {
-  id: Float!
+  id: Int!
   address: String
   is_active: Boolean
 }
 
 input CreateBoxInput {
-  id_branch: Float!
-  box: Float!
+  id_branch: Int!
+  box: Int!
 }
 
 input UpdateBoxInput {
-  id: Float!
-  box: Float
-  is_active: Boolean
+  id: Int!
+  box: Int
+  is_active: Int
 }
 
 input LoginInput {
@@ -226,6 +237,17 @@ input CreateAppointmentInput {
   date: String!
   time: String!
   type: String!
-  id_patient: Float!
-  id_personnel: Float!
+  id_patient: Int!
+  id_personnel: Int!
+}
+
+input CreateNotificationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateNotificationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
