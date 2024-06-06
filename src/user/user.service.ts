@@ -310,6 +310,8 @@ export class UserService {
       return appointmentsCount < personnel.branch.box_count;
     });
 
+    if (schedule.length === 0) throw new Error('Sin disponibilidad');
+
     const success = true;
     const message = JSON.stringify(schedule);
     const response = { success, message };
