@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationInput } from './dto/create-notification.input';
-import { UpdateNotificationInput } from './dto/update-notification.input';
+import axios from 'axios';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Injectable()
 export class NotificationService {
-  create(createNotificationInput: CreateNotificationInput) {
-    return 'This action adds a new notification';
-  }
+  async sendNotification(notif_id: string, title: string, message: string) {
+    const url = process.env.NOTIF_URL;
+    const payload = {
+      subId: notif_id,
+      appId: process.env.NOTIF_ID,
+      appToken: process.env.NOTIF_TOKEN,
+      title: title,
+      message: message,
+    };
 
-  findAll() {
-    return `This action returns all notification`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
-
-  update(id: number, updateNotificationInput: UpdateNotificationInput) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+    try {
+      const response = await axios.post(url, payload);
+    } catch (error) {
+      console.error('Error al enviar notificación:', error);
+    }
   }
 }

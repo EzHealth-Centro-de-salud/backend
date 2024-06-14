@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type MedicalRecord {
+  id: Int!
+  diagnosis: String!
+  prescription: String!
+  date_time: String!
+  patient: Patient!
+  personnel: Personnel!
+  appointment: Appointment!
+}
+
 type Appointment {
   id: Int!
   date: String!
@@ -11,6 +21,7 @@ type Appointment {
   box: Box!
   patient: Patient!
   personnel: Personnel!
+  medical_record: MedicalRecord
 }
 
 type AppointmentResponse {
@@ -40,15 +51,6 @@ type BranchResponse {
   message: String!
 }
 
-type MedicalRecord {
-  id: Int!
-  diagnosis: String!
-  prescription: String!
-  date_time: String!
-  patient: Patient!
-  personnel: Personnel!
-}
-
 type Availability {
   id: Int!
   day: String!
@@ -64,7 +66,6 @@ type AvailabilityResponse {
 type Patient {
   id: Int!
   access_token: String
-  fcmToken: String
   recovery_code: Int
   rut: String!
   password: String!
@@ -87,7 +88,6 @@ type Patient {
 type Personnel {
   id: Int!
   access_token: String
-  fcmToken: String
   recovery_code: Int
   rut: String!
   password: String!
@@ -110,11 +110,6 @@ type UserResponse {
   message: String!
 }
 
-type Notification {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type Query {
   uniqueRUT(rut: String!): UserResponse!
   getPatientByRut(rut: String!): Patient!
@@ -131,7 +126,6 @@ type Query {
   getBoxesByBranch(id_branch: Int!): [Box!]!
   getAppointment(id: Int!): Appointment!
   getAllAppointments: [Appointment!]!
-  notification(id: Int!): Notification!
 }
 
 input CheckScheduleInput {
@@ -155,9 +149,8 @@ type Mutation {
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!
   createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
-  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
-  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
-  removeNotification(id: Int!): Notification!
+  confirmAppointment(input: ConfirmAppointmentInput!): AppointmentResponse!
+  completeAppointment(input: CompleteAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -241,13 +234,14 @@ input CreateAppointmentInput {
   id_personnel: Int!
 }
 
-input CreateNotificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+input ConfirmAppointmentInput {
+  id_appointment: Int!
+  id_personnel: Int!
 }
 
-input UpdateNotificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input CompleteAppointmentInput {
+  id_appointment: Int!
+  id_personnel: Int!
+  diagnosis: String!
+  prescription: String!
 }

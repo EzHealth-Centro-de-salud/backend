@@ -26,10 +26,6 @@ export class Patient {
   access_token: string | null;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
-  fcmToken: string | null;
-
-  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   recovery_code: number | null;
 
@@ -109,10 +105,6 @@ export class Personnel {
   @Column({ nullable: true })
   @Field({ nullable: true })
   access_token: string | null;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  fcmToken: string | null;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })

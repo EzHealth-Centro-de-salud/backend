@@ -20,6 +20,8 @@ import { Box } from 'src/branch/entities/box.entity';
 import { Patient, Personnel } from 'src/user/entities/user.entity';
 import { BranchService } from 'src/branch/branch.service';
 import { UserService } from 'src/user/user.service';
+import { ConfirmAppointmentInput } from './dto/confirm-appointment.input';
+import { CompleteAppointmentInput } from './dto/complete-appointment.input';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -49,6 +51,34 @@ export class AppointmentResolver {
     try {
       return await this.appointmentService.createAppointment(
         createAppointmentInput,
+      );
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Mutation(() => AppointmentResponse)
+  async confirmAppointment(
+    @Args('input') confirmAppointmentInput: ConfirmAppointmentInput,
+  ) {
+    console.log('-> confirmAppointment');
+    try {
+      return await this.appointmentService.confirmAppointment(
+        confirmAppointmentInput,
+      );
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Mutation(() => AppointmentResponse)
+  async completeAppointment(
+    @Args('input') completeAppointmentInput: CompleteAppointmentInput,
+  ) {
+    console.log('-> completeAppointment');
+    try {
+      return await this.appointmentService.completeAppointment(
+        completeAppointmentInput,
       );
     } catch (error) {
       throw new Error(error.message);

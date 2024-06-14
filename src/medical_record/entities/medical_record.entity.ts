@@ -3,12 +3,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
+  OneToOne,
   JoinColumn,
-  Unique,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Patient, Personnel } from 'src/user/entities/user.entity';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 @Entity()
 @ObjectType()
@@ -38,4 +38,9 @@ export class MedicalRecord {
   @JoinColumn({ name: 'id_personnel' })
   @Field(() => Personnel)
   personnel: Personnel;
+
+  @OneToOne(() => Appointment, (appointment) => appointment.medical_record)
+  @JoinColumn({ name: 'id_appointment' })
+  @Field(() => Appointment)
+  appointment: Appointment;
 }
