@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty, IsEmail } from 'class-validator';
 
 @InputType()
@@ -93,6 +93,6 @@ export class CreatePersonnelInput {
   speciality: string;
 
   @IsNotEmpty()
-  @Field()
+  @Field(() => Int, { nullable: true })
   id_branch: number;
 }

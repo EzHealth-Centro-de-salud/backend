@@ -14,11 +14,11 @@ import { Personnel } from 'src/user/entities/user.entity';
 @Unique(['address'])
 export class Branch {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column()
-  @Field((type) => Int)
+  @Field(() => Int)
   box_count: number;
 
   @Column({ length: 100 })
@@ -26,10 +26,16 @@ export class Branch {
   address: string;
 
   @OneToMany(() => Box, (box) => box.branch)
+  @Field(() => [Box], { nullable: true })
   boxes: Box[];
 
   @OneToMany(() => Personnel, (personnel) => personnel.branch)
+  @Field(() => [Personnel], { nullable: true })
   personnel: Personnel[];
+
+  @Column()
+  @Field(() => Boolean)
+  is_active: boolean;
 }
 
 @ObjectType()

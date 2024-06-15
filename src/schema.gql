@@ -2,15 +2,48 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type MedicalRecord {
+  id: Int!
+  diagnosis: String!
+  prescription: String!
+  date_time: String!
+  patient: Patient!
+  personnel: Personnel!
+  appointment: Appointment!
+}
+
+type Appointment {
+  id: Int!
+  date: String!
+  time: String!
+  type: String!
+  status: String!
+  box: Box!
+  patient: Patient!
+  personnel: Personnel!
+  medical_record: MedicalRecord
+}
+
+type AppointmentResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Box {
   id: Int!
   box: Int!
+  branch: Branch!
+  appointments: [Appointment!]
+  is_active: Boolean!
 }
 
 type Branch {
   id: Int!
   box_count: Int!
   address: String!
+  boxes: [Box!]
+  personnel: [Personnel!]
+  is_active: Boolean!
 }
 
 type BranchResponse {
@@ -18,10 +51,22 @@ type BranchResponse {
   message: String!
 }
 
+type Availability {
+  id: Int!
+  day: String!
+  turn: String!
+  personnel: Personnel!
+}
+
+type AvailabilityResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Patient {
   id: Int!
   access_token: String
-  recovery_code: Float
+  recovery_code: Int
   rut: String!
   password: String!
   birthdate: String!
@@ -35,12 +80,15 @@ type Patient {
   commune: String!
   email: String!
   phone: String!
+  appointments: [Appointment!]
+  medical_records: [MedicalRecord!]
+  is_active: Boolean!
 }
 
 type Personnel {
   id: Int!
   access_token: String
-  recovery_code: Float
+  recovery_code: Int
   rut: String!
   password: String!
   first_name: String!
@@ -50,6 +98,11 @@ type Personnel {
   email: String!
   role: String!
   speciality: String!
+  branch: Branch
+  appointments: [Appointment!]
+  medical_records: [MedicalRecord!]
+  availability: [Availability!]
+  is_active: Boolean!
 }
 
 type UserResponse {
@@ -58,23 +111,36 @@ type UserResponse {
 }
 
 type Query {
+  uniqueRUT(rut: String!): UserResponse!
   getPatientByRut(rut: String!): Patient!
   getPatient(id: Int!): Patient!
   getAllPatients: [Patient!]!
   getPersonnelByRut(rut: String!): Personnel!
   getPersonnel(id: Int!): Personnel!
   getAllPersonnel: [Personnel!]!
+  checkSchedule(input: CheckScheduleInput!): AvailabilityResponse!
+  getAvailabilityByPersonnel(id_personnel: Int!): [Availability!]!
   getBranch(id: Int!): Branch!
-  getBranches: [Branch!]!
+  getAllBranches: [Branch!]!
   getBox(id: Int!): Box!
   getBoxesByBranch(id_branch: Int!): [Box!]!
+  getAppointment(id: Int!): Appointment!
+  getAllAppointments: [Appointment!]!
+}
+
+input CheckScheduleInput {
+  id_personnel: Int!
+  date: String!
 }
 
 type Mutation {
   createPatient(input: CreatePatientInput!): UserResponse!
   createPersonnel(input: CreatePersonnelInput!): UserResponse!
+  assignAvailability(input: AssignAvailabilityInput!): AvailabilityResponse!
   createBranch(input: CreateBranchInput!): BranchResponse!
+  updateBranch(input: UpdateBranchInput!): Branch!
   createBox(input: CreateBoxInput!): BranchResponse!
+  updateBox(input: UpdateBoxInput!): Box!
   loginPatient(input: LoginInput!): Patient!
   loginPersonnel(input: LoginInput!): Personnel!
   recoveryPatient(input: RecoveryUserInput!): UserResponse!
@@ -82,6 +148,9 @@ type Mutation {
   validateRecovery(input: ValidateRecoveryUserInput!): UserResponse!
   changePasswordPatient(input: ChangePasswordInput!): UserResponse!
   changePasswordPersonnel(input: ChangePasswordInput!): UserResponse!
+  createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
+  confirmAppointment(input: ConfirmAppointmentInput!): AppointmentResponse!
+  completeAppointment(input: CompleteAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -110,16 +179,33 @@ input CreatePersonnelInput {
   email: String!
   role: String!
   speciality: String!
-  id_branch: Float!
+  id_branch: Int
+}
+
+input AssignAvailabilityInput {
+  id_personnel: Int!
+  turns: String!
 }
 
 input CreateBranchInput {
   address: String!
 }
 
+input UpdateBranchInput {
+  id: Int!
+  address: String
+  is_active: Boolean
+}
+
 input CreateBoxInput {
-  id_branch: Float!
-  box: Float!
+  id_branch: Int!
+  box: Int!
+}
+
+input UpdateBoxInput {
+  id: Int!
+  box: Int
+  is_active: Int
 }
 
 input LoginInput {
@@ -138,4 +224,24 @@ input ValidateRecoveryUserInput {
 input ChangePasswordInput {
   rut: String!
   newPassword: String!
+}
+
+input CreateAppointmentInput {
+  date: String!
+  time: String!
+  type: String!
+  id_patient: Int!
+  id_personnel: Int!
+}
+
+input ConfirmAppointmentInput {
+  id_appointment: Int!
+  id_personnel: Int!
+}
+
+input CompleteAppointmentInput {
+  id_appointment: Int!
+  id_personnel: Int!
+  diagnosis: String!
+  prescription: String!
 }

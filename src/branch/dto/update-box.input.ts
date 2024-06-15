@@ -2,12 +2,14 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
-export class CreateBoxInput {
+export class UpdateBoxInput {
   @IsNotEmpty()
   @Field(() => Int)
-  id_branch: number;
+  id: number;
 
-  @IsNotEmpty()
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   box: number;
+
+  @Field(() => Int, { nullable: true })
+  is_active: boolean;
 }

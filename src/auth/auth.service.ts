@@ -31,7 +31,7 @@ export class AuthService {
     const patient = await this.userService.getPatientByRut(input.rut);
 
     if (!patient) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const validPassword = await bcrypt.compare(
@@ -40,7 +40,7 @@ export class AuthService {
     );
 
     if (!validPassword) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const payload = { rut: patient.rut, sub: patient.id, role: 'patient' };
@@ -53,10 +53,17 @@ export class AuthService {
   }
 
   async loginPersonnel(input: LoginInput): Promise<Personnel> {
-    const personnel = await this.userService.getPersonnelByRut(input.rut);
+    let personnel = null;
+    if (input.rut === 'admin') {
+      personnel = await this.personnelRepository.findOne({
+        where: { rut: input.rut },
+      });
+    } else {
+      personnel = await this.userService.getPersonnelByRut(input.rut);
+    }
 
     if (!personnel) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const validPassword = await bcrypt.compare(
@@ -65,7 +72,7 @@ export class AuthService {
     );
 
     if (!validPassword) {
-      throw new Error('Credenciales incorrectas.');
+      throw new Error('Credenciales incorrectas');
     }
 
     const payload = {
@@ -236,7 +243,7 @@ export class AuthService {
     this.patientRepository.save(patient);
 
     const success = true;
-    const message = 'Contraseña cambiada con exito.';
+    const message = 'Contraseña cambiada con exito';
     const response = { success, message };
 
     return response;
@@ -254,7 +261,7 @@ export class AuthService {
     this.personnelRepository.save(personnel);
 
     const success = true;
-    const message = 'Contraseña cambiada con exito.';
+    const message = 'Contraseña cambiada con exito';
     const response = { success, message };
 
     return response;
