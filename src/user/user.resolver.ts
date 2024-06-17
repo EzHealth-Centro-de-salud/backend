@@ -31,7 +31,7 @@ import { Appointment } from 'src/appointment/entities/appointment.entity';
 export class PatientResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query((returns) => UserResponse)
+  @Query(() => UserResponse)
   async uniqueRUT(@Args('rut') rut: string) {
     try {
       console.log('-> uniqueRUT');
@@ -42,7 +42,7 @@ export class PatientResolver {
   }
 
   //@UseGuards(GqlAuthGuard, RolesGuard)
-  @Query((returns) => Patient)
+  @Query(() => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
     console.log('-> getPatientByRut');
     const patient = await this.userService.getPatientByRut(rut);
@@ -54,7 +54,7 @@ export class PatientResolver {
   }
 
   //@UseGuards(GqlAuthGuard, RolesGuard)
-  @Query((returns) => Patient)
+  @Query(() => Patient)
   async getPatient(@Args('id', { type: () => Int }) id: number) {
     console.log('-> getPatient');
     const patient = await this.userService.getPatient(id);
@@ -67,7 +67,7 @@ export class PatientResolver {
 
   //@Roles('personnel')
   //@UseGuards(GqlAuthGuard, RolesGuard)
-  @Query((returns) => [Patient])
+  @Query(() => [Patient])
   async getAllPatients() {
     console.log('-> getAllPatients');
     return await this.userService.getAllPatients();
@@ -83,10 +83,10 @@ export class PatientResolver {
     }
   }
 
-  @ResolveField(() => [Appointment])
-  async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
-    return this.userService.getAppointmentsByPatient(patient.id);
-  }
+  // @ResolveField(() => [Appointment])
+  // async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
+  //   return this.userService.getAppointmentsByPatient(patient.id);
+  // }
 }
 
 //------------------------------------Personnel Methods------------------------------------
@@ -98,7 +98,7 @@ export class PersonnelResolver {
   ) {}
 
   //@UseGuards(GqlAuthGuard)
-  @Query((returns) => Personnel)
+  @Query(() => Personnel)
   async getPersonnelByRut(@Args('rut') rut: string) {
     console.log('-> getPersonnelByRut');
     const personnel = await this.userService.getPersonnelByRut(rut);
@@ -110,7 +110,7 @@ export class PersonnelResolver {
   }
 
   //@UseGuards(GqlAuthGuard)
-  @Query((returns) => Personnel)
+  @Query(() => Personnel)
   async getPersonnel(@Args('id', { type: () => Int }) id: number) {
     console.log('-> getPersonnel');
     const personnel = await this.userService.getPersonnel(id);
@@ -122,7 +122,7 @@ export class PersonnelResolver {
   }
 
   //@UseGuards(GqlAuthGuard)
-  @Query((returns) => [Personnel])
+  @Query(() => [Personnel])
   async getAllPersonnel() {
     console.log('-> getAllPersonnel');
     return await this.userService.getAllPersonnel();
@@ -150,10 +150,10 @@ export class PersonnelResolver {
     return this.userService.getAvailabilityByPersonnel(personnel.id);
   }
 
-  @ResolveField(() => [Appointment])
-  async appointments(@Parent() personnel: Personnel): Promise<Appointment[]> {
-    return this.userService.getAppointmentsByPersonnel(personnel.id);
-  }
+  // @ResolveField(() => [Appointment])
+  // async appointments(@Parent() personnel: Personnel): Promise<Appointment[]> {
+  //   return this.userService.getAppointmentsByPersonnel(personnel.id);
+  // }
 }
 
 //------------------------------------Availability Methods------------------------------------

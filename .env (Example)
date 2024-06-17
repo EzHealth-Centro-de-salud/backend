@@ -11,3 +11,6 @@ ADMIN_PASS = ""
 ADMIN_FIRST_NAME = ""
 ADMIN_SURNAME = ""
 ADMIN_EMAIL = "example@example.com"
+NOTIF_URL = 
+NOTIF_ID = 
+NOTIF_TOKEN = 
