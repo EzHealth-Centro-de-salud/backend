@@ -22,6 +22,7 @@ import { BranchService } from 'src/branch/branch.service';
 import { UserService } from 'src/user/user.service';
 import { ConfirmAppointmentInput } from './dto/confirm-appointment.input';
 import { CompleteAppointmentInput } from './dto/complete-appointment.input';
+import { CancelAppointmentInput } from './dto/cancel-appointment.input';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -85,18 +86,22 @@ export class AppointmentResolver {
     }
   }
 
-  @ResolveField((returns) => Box)
+  @Mutation(() => AppointmentResponse)
+  async cancelAppointment(
+    @Args('input') cancelAppointmentInput: CancelAppointmentInput,
+  ) {
+    console.log('-> cancelAppointment');
+    try {
+      return await this.appointmentService.cancelAppointment(
+        cancelAppointmentInput,
+      );
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @ResolveField(() => Box)
   async box(@Parent() appointment: Appointment): Promise<Box> {
     return await this.branchService.getBoxByAppointment(appointment.id);
-  }
-
-  @ResolveField((returns) => Personnel)
-  async personnel(@Parent() appointment: Appointment): Promise<Personnel> {
-    return await this.userService.getPersonnelByAppointment(appointment.id);
-  }
-
-  @ResolveField((returns) => Patient)
-  async patient(@Parent() appointment: Appointment): Promise<Patient> {
-    return await this.userService.getPatientByAppointment(appointment.id);
   }
 }

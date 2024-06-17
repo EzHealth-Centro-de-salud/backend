@@ -99,26 +99,37 @@ export class UserService {
   }
   async getPatientByRut(rut: string): Promise<Patient> {
     const validRut = await this.isValidRut(rut);
-    return this.patientRepository.findOne({ where: { rut: validRut } });
-  }
-
-  async getPatient(id: number): Promise<Patient> {
-    return await this.patientRepository.findOne({ where: { id } });
-  }
-
-  async getAllPatients(): Promise<Patient[]> {
-    return this.patientRepository.find();
-  }
-
-  async getPatientByAppointment(id_appointment: number): Promise<Patient> {
     return this.patientRepository.findOne({
-      where: { appointments: { id: id_appointment } },
+      where: { rut: validRut },
+      relations: [
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 
-  async getAppointmentsByPatient(id_patient: number): Promise<Appointment[]> {
-    return this.appointmentRepository.find({
-      where: { patient: { id: id_patient } },
+  async getPatient(id: number): Promise<Patient> {
+    return await this.patientRepository.findOne({
+      where: { id },
+      relations: [
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
+    });
+  }
+
+  async getAllPatients(): Promise<Patient[]> {
+    return this.patientRepository.find({
+      relations: [
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 
@@ -149,12 +160,30 @@ export class UserService {
   //------------------------------------Personnel Methods------------------------------------
   async getPersonnelByRut(rut: string): Promise<Personnel> {
     const validRut = await this.isValidRut(rut);
-    return this.personnelRepository.findOne({ where: { rut: validRut } });
+    return this.personnelRepository.findOne({
+      where: { rut: validRut },
+      relations: [
+        'availability',
+        'branch',
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
+    });
   }
 
   async getPersonnelByBranch(id_branch: number): Promise<Personnel[]> {
     return this.personnelRepository.find({
       where: { branch: { id: id_branch }, role: Not(Equal('admin')) },
+      relations: [
+        'availability',
+        'branch',
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 
@@ -164,27 +193,42 @@ export class UserService {
         appointments: { id: id_appointment },
         role: Not(Equal('admin')),
       },
+      relations: [
+        'availability',
+        'branch',
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 
   async getPersonnel(id: number): Promise<Personnel> {
     return await this.personnelRepository.findOne({
       where: { id, role: Not(Equal('admin')) },
-      relations: ['availability', 'branch', 'appointments'],
+      relations: [
+        'availability',
+        'branch',
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 
   async getAllPersonnel(): Promise<Personnel[]> {
     return this.personnelRepository.find({
       where: { role: Not(Equal('admin')) },
-    });
-  }
-
-  async getAppointmentsByPersonnel(
-    id_personnel: number,
-  ): Promise<Appointment[]> {
-    return this.appointmentRepository.find({
-      where: { personnel: { id: id_personnel } },
+      relations: [
+        'availability',
+        'branch',
+        'appointments',
+        'appointments.personnel',
+        'appointments.patient',
+        'medical_records',
+      ],
     });
   }
 

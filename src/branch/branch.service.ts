@@ -53,11 +53,21 @@ export class BranchService {
 
     const newBranch = this.branchRepository.create({
       ...input,
-      box_count: 0,
+      box_count: 4,
       is_active: true,
     });
 
     await this.branchRepository.save(newBranch);
+
+    for (let i = 1; i < 5; i++) {
+      const newBox = this.boxRepository.create({
+        box: i,
+        is_active: true,
+        branch: newBranch,
+      });
+
+      await this.boxRepository.save(newBox);
+    }
 
     const success = true;
     const message = 'Sucursal creada exitosamente';

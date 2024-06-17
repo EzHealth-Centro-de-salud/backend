@@ -151,6 +151,7 @@ type Mutation {
   createAppointment(input: CreateAppointmentInput!): AppointmentResponse!
   confirmAppointment(input: ConfirmAppointmentInput!): AppointmentResponse!
   completeAppointment(input: CompleteAppointmentInput!): AppointmentResponse!
+  cancelAppointment(input: CancelAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -244,4 +245,10 @@ input CompleteAppointmentInput {
   id_personnel: Int!
   diagnosis: String!
   prescription: String!
+}
+
+input CancelAppointmentInput {
+  id_appointment: Int!
+  id_patient: Int
+  id_personnel: Int
 }
