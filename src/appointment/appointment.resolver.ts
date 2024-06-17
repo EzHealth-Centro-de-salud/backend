@@ -23,6 +23,7 @@ import { UserService } from 'src/user/user.service';
 import { ConfirmAppointmentInput } from './dto/confirm-appointment.input';
 import { CompleteAppointmentInput } from './dto/complete-appointment.input';
 import { CancelAppointmentInput } from './dto/cancel-appointment.input';
+import { RescheduleAppointmentInput } from './dto/reschedule-appointment.input';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -94,6 +95,20 @@ export class AppointmentResolver {
     try {
       return await this.appointmentService.cancelAppointment(
         cancelAppointmentInput,
+      );
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Mutation(() => AppointmentResponse)
+  async rescheduleAppointment(
+    @Args('input') rescheduleAppointmentInput: RescheduleAppointmentInput,
+  ) {
+    console.log('-> rescheduleAppointment');
+    try {
+      return await this.appointmentService.rescheduleAppointment(
+        rescheduleAppointmentInput,
       );
     } catch (error) {
       throw new Error(error.message);
