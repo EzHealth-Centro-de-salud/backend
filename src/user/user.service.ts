@@ -97,6 +97,7 @@ export class UserService {
 
     return response;
   }
+
   async getPatientByRut(rut: string): Promise<Patient> {
     const validRut = await this.isValidRut(rut);
     return this.patientRepository.findOne({

@@ -81,7 +81,7 @@ export class Patient {
   @Field()
   phone: string;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.personnel)
+  @OneToMany(() => Appointment, (appointment) => appointment.patient)
   @Field(() => [Appointment], { nullable: true })
   appointments: Appointment[];
 
