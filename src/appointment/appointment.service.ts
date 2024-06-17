@@ -16,6 +16,7 @@ import { ConfirmAppointmentInput } from './dto/confirm-appointment.input';
 import { CompleteAppointmentInput } from './dto/complete-appointment.input';
 import { MedicalRecordService } from 'src/medical_record/medical_record.service';
 import { CancelAppointmentInput } from './dto/cancel-appointment.input';
+import { RescheduleAppointmentInput } from './dto/reschedule-appointment.input';
 
 @Injectable()
 export class AppointmentService {
@@ -87,6 +88,7 @@ export class AppointmentService {
 
     const scheduleInput = {
       id_personnel: input.id_personnel,
+      id_patient: input.id_patient,
       date: input.date,
     };
 
@@ -538,6 +540,126 @@ export class AppointmentService {
 
     const success = true;
     const message = 'Cita cancelada exitosamente';
+    const response = { success, message };
+
+    return response;
+  }
+
+  async rescheduleAppointment(
+    input: RescheduleAppointmentInput,
+  ): Promise<AppointmentResponse> {
+    // Check if appointment exists
+    const appointment = await this.appointmentRepository.findOne({
+      where: { id: input.id_appointment },
+      relations: ['personnel', 'personnel.branch', 'patient'],
+    });
+
+    if (!appointment) {
+      throw new Error('La cita no existe');
+    }
+
+    // Check if appointment is completed
+    if (appointment.status === 'Completada') {
+      throw new Error('La cita ya ha sido completada');
+    } else {
+      if (appointment.status === 'Cancelada') {
+        throw new Error('La cita ha sido cancelada');
+      }
+    }
+
+    const scheduleInput = {
+      id_personnel: appointment.personnel.id,
+      id_patient: appointment.patient.id,
+      date: input.date,
+    };
+
+    const schedule = await this.userService.checkSchedule(scheduleInput);
+
+    const isAvailable = schedule.message.includes(input.time);
+
+    if (!isAvailable) {
+      throw new Error('El medico no tiene disponibilidad para ese horario');
+    }
+
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        date: input.date,
+        time: input.time,
+        box: { branch: appointment.personnel.branch },
+      },
+      relations: ['box'],
+    });
+
+    let availableBox = null;
+    const branch = await this.branchService.getBranch(
+      appointment.personnel.branch.id,
+    );
+
+    if (appointments.length > 0) {
+      const occupiedBoxIds = appointments.map((app) => app.box.id);
+
+      availableBox = branch.boxes.find(
+        (box) => !occupiedBoxIds.includes(box.id),
+      );
+
+      if (!availableBox) {
+        throw new Error('No hay boxes disponibles');
+      }
+    } else {
+      availableBox = branch.boxes[0];
+    }
+
+    appointment.date = input.date;
+    appointment.time = input.time;
+    appointment.box = availableBox;
+    appointment.status = 'Confirmada';
+    await this.appointmentRepository.save(appointment);
+
+    // Send email to personnel
+    const nodemailer = require('nodemailer');
+    const client = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const dayName = semana[new Date(input.date).getDay()];
+    const dayNum = input.date.split('-')[2];
+    const monthName = meses[new Date(input.date).getMonth()];
+
+    client.sendMail(
+      {
+        from: '"EzHealth" <noreply@ezhealth.com>',
+        to: appointment.patient.email,
+        subject: `Cita reagendada ${input.date}`,
+        html: `
+          <h1>Cita reagendada</h1>
+          <p>Hola <strong>${appointment.patient.first_name} ${appointment.patient.surname}</strong></p>
+          <p>Nos complace informarle que su cita con <strong>${appointment.personnel.first_name} ${appointment.personnel.surname}</strong> ha sido reagendada. La nueva fecha y hora de su cita es el dia <strong>${dayName} ${dayNum} de ${monthName} a las ${input.time} hrs</strong>.</p>
+          <p>Si tiene alguna pregunta o necesita hacer algún cambio adicional, no dude en ponerse en contacto con nosotros.</p>
+          <p>Gracias,</p>
+          <p>El equipo de EzHealth</p>
+        `,
+      },
+      (error) => {
+        if (error) {
+          throw new Error('Error al enviar el correo');
+        }
+      },
+    );
+
+    //Send notification to patient
+    const patient_notif_id = appointment.patient.id;
+    this.notificationService.sendNotification(
+      patient_notif_id.toString(),
+      'Cita reagendada',
+      `Nos complace informarle que su cita con ${appointment.personnel.first_name} ${appointment.personnel.surname} ha sido reagendada. La nueva fecha y hora de su cita es el dia ${dayName} ${dayNum} de ${monthName} a las ${input.time} hrs.`,
+    );
+
+    const success = true;
+    const message = 'Cita reagendada exitosamente';
     const response = { success, message };
 
     return response;

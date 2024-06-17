@@ -278,16 +278,22 @@ export class UserService {
   async checkSchedule(
     input: CheckScheduleInput,
   ): Promise<AvailabilityResponse> {
-    const personnel = await this.personnelRepository.findOne({
-      where: { id: input.id_personnel },
-      relations: ['availability', 'branch', 'appointments'],
-    });
+    const personnel = await this.getPersonnel(input.id_personnel);
     if (!personnel) {
       throw new Error('Personal no encontrado');
     }
 
+    const patient = await this.getPatient(input.id_patient);
+    if (!patient) {
+      throw new Error('Paciente no encontrado');
+    }
+
     // Filter appointments by date
     personnel.appointments = personnel.appointments.filter(
+      (app) => app.date === input.date,
+    );
+
+    patient.appointments = patient.appointments.filter(
       (app) => app.date === input.date,
     );
 
@@ -335,6 +341,11 @@ export class UserService {
       const appointment = personnel.appointments.find(
         (app) => app.time === time,
       );
+      return !appointment || appointment.status === 'Cancelada';
+    });
+
+    schedule = schedule.filter((time) => {
+      const appointment = patient.appointments.find((app) => app.time === time);
       return !appointment || appointment.status === 'Cancelada';
     });
 

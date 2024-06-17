@@ -8,6 +8,10 @@ export class CheckScheduleInput {
   id_personnel: number;
 
   @IsNotEmpty()
+  @Field(() => Int)
+  id_patient: number;
+
+  @IsNotEmpty()
   @Field()
   date: string;
 }

@@ -130,6 +130,7 @@ type Query {
 
 input CheckScheduleInput {
   id_personnel: Int!
+  id_patient: Int!
   date: String!
 }
 
@@ -152,6 +153,7 @@ type Mutation {
   confirmAppointment(input: ConfirmAppointmentInput!): AppointmentResponse!
   completeAppointment(input: CompleteAppointmentInput!): AppointmentResponse!
   cancelAppointment(input: CancelAppointmentInput!): AppointmentResponse!
+  rescheduleAppointment(input: RescheduleAppointmentInput!): AppointmentResponse!
 }
 
 input CreatePatientInput {
@@ -251,4 +253,10 @@ input CancelAppointmentInput {
   id_appointment: Int!
   id_patient: Int
   id_personnel: Int
+}
+
+input RescheduleAppointmentInput {
+  id_appointment: Int!
+  date: String!
+  time: String!
 }
