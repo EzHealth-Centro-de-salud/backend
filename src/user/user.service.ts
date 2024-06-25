@@ -335,7 +335,6 @@ export class UserService {
     const currentDate = `${year}-${month}-${day}`;
 
     if (currentDate === input.date) {
-      console.log('today');
       schedule = schedule.filter((time) => {
         const [hours, minutes] = time.split(':').map(Number);
         return (

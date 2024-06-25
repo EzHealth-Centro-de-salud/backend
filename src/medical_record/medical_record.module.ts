@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MedicalRecordService } from './medical_record.service';
-import { MedicalRecordResolver } from './medical_record.resolver';
 import { MedicalRecord } from './entities/medical_record.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
@@ -10,7 +9,7 @@ import { Patient, Personnel } from 'src/user/entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([MedicalRecord, Appointment, Patient, Personnel]),
   ],
-  providers: [MedicalRecordResolver, MedicalRecordService],
+  providers: [MedicalRecordService],
   exports: [MedicalRecordService],
 })
 export class MedicalRecordModule {}

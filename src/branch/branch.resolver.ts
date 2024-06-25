@@ -31,14 +31,12 @@ export class BranchResolver {
   //@UseGuards(GqlAuthGuard)
   @Query((returns) => Branch)
   async getBranch(@Args('id', { type: () => Int }) id: number) {
-    console.log('-> getBranch');
     return await this.branchService.getBranch(id);
   }
 
   //@UseGuards(GqlAuthGuard)
   @Query((returns) => [Branch])
   async getAllBranches() {
-    console.log('-> getAllBranches');
     return await this.branchService.getAllBranch();
   }
 
@@ -47,7 +45,6 @@ export class BranchResolver {
   //@UseGuards(GqlAuthGuard)
   @Mutation(() => BranchResponse)
   async createBranch(@Args('input') createBranchInput: CreateBranchInput) {
-    console.log('-> createBranch');
     try {
       return await this.branchService.createBranch(createBranchInput);
     } catch (error) {
@@ -57,7 +54,6 @@ export class BranchResolver {
 
   @Mutation(() => Branch)
   async updateBranch(@Args('input') updateBranchInput: UpdateBranchInput) {
-    console.log('-> updateBranch');
     try {
       return await this.branchService.updateBranch(updateBranchInput);
     } catch (error) {
@@ -83,7 +79,6 @@ export class BoxResolver {
   //@UseGuards(GqlAuthGuard)
   @Query((returns) => Box)
   async getBox(@Args('id', { type: () => Int }) id: number) {
-    console.log('-> getBox');
     return await this.branchService.getBox(id);
   }
 
@@ -92,7 +87,6 @@ export class BoxResolver {
   async getBoxesByBranch(
     @Args('id_branch', { type: () => Int }) id_branch: number,
   ) {
-    console.log('-> getBoxesByBranch');
     return await this.branchService.getBoxesByBranch(id_branch);
   }
 
@@ -101,7 +95,6 @@ export class BoxResolver {
   //@UseGuards(GqlAuthGuard)
   @Mutation(() => BranchResponse)
   async createBox(@Args('input') createBoxInput: CreateBoxInput) {
-    console.log('-> createBox');
     try {
       return await this.branchService.createBox(createBoxInput);
     } catch (error) {
@@ -111,7 +104,6 @@ export class BoxResolver {
 
   @Mutation(() => Box)
   async updateBox(@Args('input') updateBoxInput: UpdateBoxInput) {
-    console.log('-> updateBox');
     try {
       return await this.branchService.updateBox(updateBoxInput);
     } catch (error) {

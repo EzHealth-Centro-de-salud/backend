@@ -32,8 +32,6 @@ export class AppointmentService {
   ) {}
   //------------------------------------Other Methods------------------------------------
   schedule_app = cron.schedule('0,30 * * * *', async () => {
-    console.log('Tarea ejecutada cada minuto 0 y 30');
-
     const currentDate = new Date();
     const dateIn24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
 
@@ -54,7 +52,6 @@ export class AppointmentService {
 
     appointments.forEach((app) => {
       const patient_notif_id = app.patient.id;
-      console.log('Enviando notificación a:', patient_notif_id);
       this.notificationService.sendNotification(
         patient_notif_id.toString(),
         'Recordatorio de cita',
@@ -487,7 +484,7 @@ export class AppointmentService {
       const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
 
       if (differenceInHours <= 24) {
-        console.log(
+        throw new Error(
           'No se puede cancelar la cita, ya que ha pasado el tiempo límite de cancelación',
         );
       }
