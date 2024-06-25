@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, Equal } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import * as cron from 'node-cron';
 import {
   Appointment,
@@ -31,9 +31,43 @@ export class AppointmentService {
     private medicalRecordService: MedicalRecordService,
   ) {}
   //------------------------------------Other Methods------------------------------------
-  schedule_app = cron.schedule('0,30 * * * *', () => {
+  schedule_app = cron.schedule('0,30 * * * *', async () => {
     console.log('Tarea ejecutada cada minuto 0 y 30');
-    // Lógica de tu tarea aquí
+
+    const currentDate = new Date();
+    const dateIn24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+
+    const dateString = dateIn24Hours.toLocaleDateString('en-CA').split('T')[0];
+    const timeString = dateIn24Hours
+      .toTimeString()
+      .split(' ')[0]
+      .substring(0, 5);
+
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        date: dateString,
+        time: timeString,
+        status: 'Confirmada',
+      },
+      relations: ['patient', 'personnel', 'box'],
+    });
+
+    appointments.forEach((app) => {
+      const patient_notif_id = app.patient.id;
+      console.log('Enviando notificación a:', patient_notif_id);
+      this.notificationService.sendNotification(
+        patient_notif_id.toString(),
+        'Recordatorio de cita',
+        `Le recordamos que tiene una cita con ${app.personnel.first_name} ${app.personnel.surname} el dia mañana a las ${timeString} hrs.`,
+      );
+
+      const personnel_notif_id = '-' + app.personnel.id.toString();
+      this.notificationService.sendNotification(
+        personnel_notif_id,
+        'Recordatorio de cita',
+        `Le recordamos que tiene una cita con ${app.patient.first_name} ${app.patient.surname} el dia mañana a las ${timeString} hrs.`,
+      );
+    });
   });
   //------------------------------------Appointment Methods------------------------------------
   async getAppointment(id: number): Promise<Appointment> {
@@ -104,6 +138,7 @@ export class AppointmentService {
       where: {
         date: input.date,
         time: input.time,
+        status: In(['Pendiente', 'Confirmada']),
         box: { branch: personnel.branch },
       },
       relations: ['box'],
@@ -585,6 +620,7 @@ export class AppointmentService {
       where: {
         date: input.date,
         time: input.time,
+        status: In(['Pendiente', 'Confirmada']),
         box: { branch: appointment.personnel.branch },
       },
       relations: ['box'],
