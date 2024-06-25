@@ -107,6 +107,7 @@ export class UserService {
         'appointments.personnel',
         'appointments.patient',
         'medical_records',
+        'medical_records.personnel',
       ],
     });
   }
@@ -119,6 +120,10 @@ export class UserService {
         'appointments.personnel',
         'appointments.patient',
         'medical_records',
+        'medical_records.personnel',
+        'medical_records.appointment',
+        'medical_records.appointment.box',
+        'medical_records.appointment.box.branch',
       ],
     });
   }
@@ -130,6 +135,10 @@ export class UserService {
         'appointments.personnel',
         'appointments.patient',
         'medical_records',
+        'medical_records.personnel',
+        'medical_records.appointment',
+        'medical_records.appointment.box',
+        'medical_records.appointment.box.branch',
       ],
     });
   }
