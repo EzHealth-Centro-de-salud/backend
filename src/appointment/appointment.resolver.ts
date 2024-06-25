@@ -30,18 +30,15 @@ export class AppointmentResolver {
   constructor(
     private readonly appointmentService: AppointmentService,
     private readonly branchService: BranchService,
-    private readonly userService: UserService,
   ) {}
 
   @Query(() => Appointment)
   async getAppointment(@Args('id', { type: () => Int }) id: number) {
-    console.log('-> getAppointment');
     return await this.appointmentService.getAppointment(id);
   }
 
   @Query(() => [Appointment])
   async getAllAppointments() {
-    console.log('-> getAppointments');
     return await this.appointmentService.getAllAppointments();
   }
 
@@ -49,7 +46,6 @@ export class AppointmentResolver {
   async createAppointment(
     @Args('input') createAppointmentInput: CreateAppointmentInput,
   ) {
-    console.log('-> createAppointment');
     try {
       return await this.appointmentService.createAppointment(
         createAppointmentInput,
@@ -63,7 +59,6 @@ export class AppointmentResolver {
   async confirmAppointment(
     @Args('input') confirmAppointmentInput: ConfirmAppointmentInput,
   ) {
-    console.log('-> confirmAppointment');
     try {
       return await this.appointmentService.confirmAppointment(
         confirmAppointmentInput,
@@ -77,7 +72,6 @@ export class AppointmentResolver {
   async completeAppointment(
     @Args('input') completeAppointmentInput: CompleteAppointmentInput,
   ) {
-    console.log('-> completeAppointment');
     try {
       return await this.appointmentService.completeAppointment(
         completeAppointmentInput,
@@ -91,7 +85,6 @@ export class AppointmentResolver {
   async cancelAppointment(
     @Args('input') cancelAppointmentInput: CancelAppointmentInput,
   ) {
-    console.log('-> cancelAppointment');
     try {
       return await this.appointmentService.cancelAppointment(
         cancelAppointmentInput,
@@ -105,7 +98,6 @@ export class AppointmentResolver {
   async rescheduleAppointment(
     @Args('input') rescheduleAppointmentInput: RescheduleAppointmentInput,
   ) {
-    console.log('-> rescheduleAppointment');
     try {
       return await this.appointmentService.rescheduleAppointment(
         rescheduleAppointmentInput,

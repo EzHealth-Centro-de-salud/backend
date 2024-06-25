@@ -34,7 +34,6 @@ export class PatientResolver {
   @Query(() => UserResponse)
   async uniqueRUT(@Args('rut') rut: string) {
     try {
-      console.log('-> uniqueRUT');
       return await this.userService.uniqueRUT(rut);
     } catch (error) {
       throw new Error(error.message);
@@ -44,7 +43,6 @@ export class PatientResolver {
   //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => Patient)
   async getPatientByRut(@Args('rut') rut: string) {
-    console.log('-> getPatientByRut');
     const patient = await this.userService.getPatientByRut(rut);
 
     if (!patient) {
@@ -56,7 +54,6 @@ export class PatientResolver {
   //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => Patient)
   async getPatient(@Args('id', { type: () => Int }) id: number) {
-    console.log('-> getPatient');
     const patient = await this.userService.getPatient(id);
 
     if (!patient) {
@@ -69,24 +66,17 @@ export class PatientResolver {
   //@UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => [Patient])
   async getAllPatients() {
-    console.log('-> getAllPatients');
     return await this.userService.getAllPatients();
   }
 
   @Mutation(() => UserResponse)
   async createPatient(@Args('input') patientInput: CreatePatientInput) {
     try {
-      console.log('-> createPatient');
       return await this.userService.createPatient(patientInput);
     } catch (error) {
       throw new Error(error.message);
     }
   }
-
-  // @ResolveField(() => [Appointment])
-  // async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
-  //   return this.userService.getAppointmentsByPatient(patient.id);
-  // }
 }
 
 //------------------------------------Personnel Methods------------------------------------
@@ -100,7 +90,6 @@ export class PersonnelResolver {
   //@UseGuards(GqlAuthGuard)
   @Query(() => Personnel)
   async getPersonnelByRut(@Args('rut') rut: string) {
-    console.log('-> getPersonnelByRut');
     const personnel = await this.userService.getPersonnelByRut(rut);
 
     if (!personnel) {
@@ -112,7 +101,6 @@ export class PersonnelResolver {
   //@UseGuards(GqlAuthGuard)
   @Query(() => Personnel)
   async getPersonnel(@Args('id', { type: () => Int }) id: number) {
-    console.log('-> getPersonnel');
     const personnel = await this.userService.getPersonnel(id);
 
     if (!personnel) {
@@ -124,7 +112,6 @@ export class PersonnelResolver {
   //@UseGuards(GqlAuthGuard)
   @Query(() => [Personnel])
   async getAllPersonnel() {
-    console.log('-> getAllPersonnel');
     return await this.userService.getAllPersonnel();
   }
 
@@ -133,7 +120,6 @@ export class PersonnelResolver {
   @Mutation(() => UserResponse)
   async createPersonnel(@Args('input') personnelInput: CreatePersonnelInput) {
     try {
-      console.log('-> createPersonnel');
       return await this.userService.createPersonnel(personnelInput);
     } catch (error) {
       throw new Error(error.message);
@@ -149,11 +135,6 @@ export class PersonnelResolver {
   async availability(@Parent() personnel: Personnel): Promise<Availability[]> {
     return this.userService.getAvailabilityByPersonnel(personnel.id);
   }
-
-  // @ResolveField(() => [Appointment])
-  // async appointments(@Parent() personnel: Personnel): Promise<Appointment[]> {
-  //   return this.userService.getAppointmentsByPersonnel(personnel.id);
-  // }
 }
 
 //------------------------------------Availability Methods------------------------------------
@@ -164,7 +145,6 @@ export class AvailabilityResolver {
   @Query(() => AvailabilityResponse)
   async checkSchedule(@Args('input') scheduleInput: CheckScheduleInput) {
     try {
-      console.log('-> checkSchedule');
       return await this.userService.checkSchedule(scheduleInput);
     } catch (error) {
       throw new Error(error.message);
@@ -176,7 +156,6 @@ export class AvailabilityResolver {
     @Args('id_personnel', { type: () => Int }) id_personnel: number,
   ) {
     try {
-      console.log('-> getAvailabilityByPersonnel');
       return await this.userService.getAvailabilityByPersonnel(id_personnel);
     } catch (error) {
       throw new Error(error.message);
@@ -188,7 +167,6 @@ export class AvailabilityResolver {
     @Args('input') availabilityInput: AssignAvailabilityInput,
   ) {
     try {
-      console.log('-> assignAvailability');
       return await this.userService.assignAvailability(availabilityInput);
     } catch (error) {
       throw new Error(error.message);

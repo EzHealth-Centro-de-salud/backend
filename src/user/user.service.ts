@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, Equal } from 'typeorm';
+import { Repository, Not, Equal, In } from 'typeorm';
 import {
   CreatePatientInput,
   CreatePersonnelInput,
@@ -335,7 +335,6 @@ export class UserService {
     const currentDate = `${year}-${month}-${day}`;
 
     if (currentDate === input.date) {
-      console.log('today');
       schedule = schedule.filter((time) => {
         const [hours, minutes] = time.split(':').map(Number);
         return (
@@ -350,18 +349,27 @@ export class UserService {
       const appointment = personnel.appointments.find(
         (app) => app.time === time,
       );
-      return !appointment || appointment.status === 'Cancelada';
+      return (
+        !appointment ||
+        appointment.status === 'Cancelada' ||
+        appointment.status === 'Completada'
+      );
     });
 
     schedule = schedule.filter((time) => {
       const appointment = patient.appointments.find((app) => app.time === time);
-      return !appointment || appointment.status === 'Cancelada';
+      return (
+        !appointment ||
+        appointment.status === 'Cancelada' ||
+        appointment.status === 'Completada'
+      );
     });
 
     // Filter schedule by boxes availability
     const appointments = await this.appointmentRepository.find({
       where: {
         date: input.date,
+        status: In(['Pendiente', 'Confirmada']),
         box: { branch: personnel.branch },
       },
       relations: ['box'],

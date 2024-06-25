@@ -159,7 +159,6 @@ export class BranchService {
   }
 
   async updateBox(input: UpdateBoxInput): Promise<Box> {
-    console.log(input);
     const box = await this.boxRepository.findOne({
       where: { id: input.id },
     });
