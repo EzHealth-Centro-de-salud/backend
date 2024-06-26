@@ -18,6 +18,7 @@ export class NotificationService {
 
     try {
       const response = await axios.post(url, payload);
+      console.log('Notificación enviada:', response.data);
     } catch (error) {
       console.error('Error al enviar notificación:', error);
     }
