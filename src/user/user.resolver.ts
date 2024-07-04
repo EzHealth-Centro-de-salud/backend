@@ -23,7 +23,10 @@ import {
   AvailabilityResponse,
 } from './entities/availability.entity';
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
-import { CheckScheduleInput } from './dto/check-schedule.input';
+import {
+  CheckScheduleAdminInput,
+  CheckScheduleInput,
+} from './dto/check-schedule.input';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 //------------------------------------Patient Methods------------------------------------
@@ -146,6 +149,17 @@ export class AvailabilityResolver {
   async checkSchedule(@Args('input') scheduleInput: CheckScheduleInput) {
     try {
       return await this.userService.checkSchedule(scheduleInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Query(() => AvailabilityResponse)
+  async checkScheduleAdmin(
+    @Args('input') scheduleAdminInput: CheckScheduleAdminInput,
+  ) {
+    try {
+      return await this.userService.checkScheduleAdmin(scheduleAdminInput);
     } catch (error) {
       throw new Error(error.message);
     }
