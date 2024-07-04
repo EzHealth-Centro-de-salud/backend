@@ -15,3 +15,14 @@ export class CheckScheduleInput {
   @Field()
   date: string;
 }
+
+@InputType()
+export class CheckScheduleAdminInput {
+  @IsNotEmpty()
+  @Field(() => Int)
+  id_personnel: number;
+
+  @IsNotEmpty()
+  @Field()
+  date: string;
+}

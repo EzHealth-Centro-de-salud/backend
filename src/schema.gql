@@ -119,6 +119,7 @@ type Query {
   getPersonnel(id: Int!): Personnel!
   getAllPersonnel: [Personnel!]!
   checkSchedule(input: CheckScheduleInput!): AvailabilityResponse!
+  checkScheduleAdmin(input: CheckScheduleAdminInput!): AvailabilityResponse!
   getAvailabilityByPersonnel(id_personnel: Int!): [Availability!]!
   getBranch(id: Int!): Branch!
   getAllBranches: [Branch!]!
@@ -131,6 +132,11 @@ type Query {
 input CheckScheduleInput {
   id_personnel: Int!
   id_patient: Int!
+  date: String!
+}
+
+input CheckScheduleAdminInput {
+  id_personnel: Int!
   date: String!
 }
 

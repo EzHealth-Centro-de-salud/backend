@@ -15,7 +15,10 @@ import {
 } from './entities/availability.entity';
 import { AssignAvailabilityInput } from './dto/assign-availability.input';
 import { semana, completo, mañana, tarde } from 'src/constants/schedule';
-import { CheckScheduleInput } from './dto/check-schedule.input';
+import {
+  CheckScheduleAdminInput,
+  CheckScheduleInput,
+} from './dto/check-schedule.input';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 
 dotenv.config();
@@ -358,6 +361,96 @@ export class UserService {
 
     schedule = schedule.filter((time) => {
       const appointment = patient.appointments.find((app) => app.time === time);
+      return (
+        !appointment ||
+        appointment.status === 'Cancelada' ||
+        appointment.status === 'Completada'
+      );
+    });
+
+    // Filter schedule by boxes availability
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        date: input.date,
+        status: In(['Pendiente', 'Confirmada']),
+        box: { branch: personnel.branch },
+      },
+      relations: ['box'],
+    });
+
+    schedule = schedule.filter((time) => {
+      const appointmentsCount = appointments.filter(
+        (app) => app.time === time,
+      ).length;
+
+      return appointmentsCount < personnel.branch.box_count;
+    });
+
+    if (schedule.length === 0) throw new Error('Sin disponibilidad');
+
+    const success = true;
+    const message = JSON.stringify(schedule);
+    const response = { success, message };
+
+    return response;
+  }
+
+  async checkScheduleAdmin(
+    input: CheckScheduleAdminInput,
+  ): Promise<AvailabilityResponse> {
+    const personnel = await this.getPersonnel(input.id_personnel);
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    // Filter appointments by date
+    personnel.appointments = personnel.appointments.filter(
+      (app) => app.date === input.date,
+    );
+
+    // Get turn by day name
+    const date = new Date(input.date);
+    const dayName = semana[date.getDay()];
+
+    if (dayName === 'sábado' || dayName === 'domingo') {
+      throw new Error('No hay atención los fines de semana');
+    }
+
+    const turn = personnel.availability.find((a) => a.day === dayName).turn;
+    let schedule = null;
+
+    if (turn === 'completo') {
+      schedule = completo;
+    } else if (turn === 'mañana') {
+      schedule = mañana;
+    } else if (turn === 'tarde') {
+      schedule = tarde;
+    } else {
+      throw new Error('Sin disponibilidad');
+    }
+
+    // Filter schedule by current time
+    const current = new Date();
+    const year = current.getFullYear();
+    const month = String(current.getMonth() + 1).padStart(2, '0');
+    const day = String(current.getDate()).padStart(2, '0');
+    const currentDate = `${year}-${month}-${day}`;
+
+    if (currentDate === input.date) {
+      schedule = schedule.filter((time) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return (
+          hours > current.getHours() ||
+          (hours === current.getHours() && minutes > current.getMinutes())
+        );
+      });
+    }
+
+    // Filter schedule by appointments and status
+    schedule = schedule.filter((time) => {
+      const appointment = personnel.appointments.find(
+        (app) => app.time === time,
+      );
       return (
         !appointment ||
         appointment.status === 'Cancelada' ||
