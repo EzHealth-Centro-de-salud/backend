@@ -28,6 +28,10 @@ import {
   CheckScheduleInput,
 } from './dto/check-schedule.input';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
+import {
+  UpdatePatientInput,
+  UpdatePersonnelInput,
+} from './dto/update-user.input';
 
 //------------------------------------Patient Methods------------------------------------
 @Resolver(() => Patient)
@@ -80,6 +84,15 @@ export class PatientResolver {
       throw new Error(error.message);
     }
   }
+
+  @Mutation(() => UserResponse)
+  async updatePatient(@Args('input') patientInput: UpdatePatientInput) {
+    try {
+      return await this.userService.updatePatient(patientInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 //------------------------------------Personnel Methods------------------------------------
@@ -124,6 +137,15 @@ export class PersonnelResolver {
   async createPersonnel(@Args('input') personnelInput: CreatePersonnelInput) {
     try {
       return await this.userService.createPersonnel(personnelInput);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Mutation(() => UserResponse)
+  async updatePersonnel(@Args('input') personnelInput: UpdatePersonnelInput) {
+    try {
+      return await this.userService.updatePersonnel(personnelInput);
     } catch (error) {
       throw new Error(error.message);
     }

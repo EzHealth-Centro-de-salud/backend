@@ -20,6 +20,10 @@ import {
   CheckScheduleInput,
 } from './dto/check-schedule.input';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
+import {
+  UpdatePatientInput,
+  UpdatePersonnelInput,
+} from './dto/update-user.input';
 
 dotenv.config();
 
@@ -170,6 +174,46 @@ export class UserService {
     return response;
   }
 
+  async updatePatient(input: UpdatePatientInput): Promise<UserResponse> {
+    const patient = await this.getPatient(input.id_patient);
+
+    if (!patient) {
+      throw new Error('Paciente no encontrado');
+    }
+
+    if (input.address) {
+      patient.address = input.address;
+    }
+
+    if (input.region) {
+      patient.region = input.region;
+    }
+
+    if (input.commune) {
+      patient.commune = input.commune;
+    }
+
+    if (input.email) {
+      patient.email = input.email;
+    }
+
+    if (input.phone) {
+      patient.phone = input.phone;
+    }
+
+    if (input.is_active) {
+      patient.is_active = input.is_active;
+    }
+
+    await this.patientRepository.save(patient);
+
+    const success = true;
+    const message = 'Paciente actualizado exitosamente';
+    const response = { success, message };
+
+    return response;
+  }
+
   //------------------------------------Personnel Methods------------------------------------
   async getPersonnelByRut(rut: string): Promise<Personnel> {
     const validRut = await this.isValidRut(rut);
@@ -281,6 +325,26 @@ export class UserService {
 
     const success = true;
     const message = 'Personal creado exitosamente';
+    const response = { success, message };
+
+    return response;
+  }
+
+  async updatePersonnel(input: UpdatePersonnelInput): Promise<UserResponse> {
+    const personnel = await this.getPersonnel(input.id_personnel);
+
+    if (!personnel) {
+      throw new Error('Personal no encontrado');
+    }
+
+    if (input.email) {
+      personnel.email = input.email;
+    }
+
+    await this.personnelRepository.save(personnel);
+
+    const success = true;
+    const message = 'Personal actualizado exitosamente';
     const response = { success, message };
 
     return response;

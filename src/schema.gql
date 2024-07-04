@@ -142,7 +142,9 @@ input CheckScheduleAdminInput {
 
 type Mutation {
   createPatient(input: CreatePatientInput!): UserResponse!
+  updatePatient(input: UpdatePatientInput!): UserResponse!
   createPersonnel(input: CreatePersonnelInput!): UserResponse!
+  updatePersonnel(input: UpdatePersonnelInput!): UserResponse!
   assignAvailability(input: AssignAvailabilityInput!): AvailabilityResponse!
   createBranch(input: CreateBranchInput!): BranchResponse!
   updateBranch(input: UpdateBranchInput!): Branch!
@@ -178,6 +180,16 @@ input CreatePatientInput {
   phone: String!
 }
 
+input UpdatePatientInput {
+  id_patient: Float!
+  address: String
+  region: String
+  commune: String
+  email: String
+  phone: String
+  is_active: Boolean
+}
+
 input CreatePersonnelInput {
   rut: String!
   password: String!
@@ -189,6 +201,11 @@ input CreatePersonnelInput {
   role: String!
   speciality: String!
   id_branch: Int
+}
+
+input UpdatePersonnelInput {
+  id_personnel: Float!
+  email: String!
 }
 
 input AssignAvailabilityInput {
